@@ -1,0 +1,116 @@
+@charset "UTF-8";
+/** 内容居中 
+------------------------------------------------------------*/
+/** 所有元素
+------------------------------------------------------------*/
+* {
+  padding: 0;
+  margin: 0; }
+
+/** body 元素
+------------------------------------------------------------*/
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center; }
+
+/** 棋盘 
+------------------------------------------------------------*/
+.chessboard {
+  width: 1000px;
+  height: 1000px;
+  position: relative;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center; }
+
+/** 棋盘内容
+------------------------------------------------------------*/
+.content {
+  position: absolute;
+  top: 0;
+  left: 50px;
+  right: 100px;
+  width: 900px;
+  height: 1000px;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-flow: wrap row;
+  justify-content: space-between;
+  z-index: 99; }
+
+/** 格子
+------------------------------------------------------------*/
+.lattice {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  z-index: 99;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center; }
+
+/** 棋子 
+------------------------------------------------------------*/
+.chess {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  font-size: 25px;
+  font-weight: 900;
+  background-color: #ffe3be;
+  vertical-align: middle;
+  box-shadow: 3px 3px 3px 1px gray;
+  display: flex;
+  flex-flow: nowrap row;
+  justify-content: center;
+  align-items: center;
+  /** 红色文本
+  ------------------------------------------------------------*/
+  /** 黑色文本
+  ------------------------------------------------------------*/ }
+  .chess.red {
+    color: red; }
+  .chess.black {
+    color: black; }
+
+/** 棋子文本
+------------------------------------------------------------*/
+.chess > span {
+  text-align: center;
+  height: 30px;
+  width: 30px; }
+
+/** 激活棋子
+------------------------------------------------------------*/
+.active {
+  box-shadow: 3px 3px 0.5em 1px white; }
+
+/** 格子激活
+------------------------------------------------------------*/
+.lattice-active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50px; }
+
+/** 点位
+------------------------------------------------------------*/
+.point {
+  width: 20px;
+  height: 20px;
+  border-radius: 50px;
+  background-color: greenyellow;
+  position: absolute;
+  left: 40px;
+  top: 40px; }
+
+/** 隐藏点位
+------------------------------------------------------------*/
+.hidden {
+  display: none; }
+
+/*# sourceMappingURL=index.css.map */

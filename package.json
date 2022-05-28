@@ -1,0 +1,14 @@
+{
+    "devDependencies": {
+        "ts-loader": "^9.2.6",
+        "typescript": "^4.4.3",
+        "webpack": "^5.27.2",
+        "webpack-cli": "^4.5.0",
+        "webpack-dev-server": "^3.11.2"
+    },
+    "scripts": {
+        "web": "npx webpack --watch",
+        "dev": "webpack serve --mode development",
+        "scss": "scss --watch ./src/theme/main.scss:./src/theme/index.css"
+    }
+}

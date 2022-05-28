@@ -1,0 +1,144 @@
+@charset 'utf-8';
+
+/** 内容居中 
+------------------------------------------------------------*/
+@mixin center {
+    display: flex;
+    flex-flow: nowrap row;
+    justify-content: center;
+    align-items: center;
+}
+
+/** 所有元素
+------------------------------------------------------------*/
+* {
+    // 取消边距
+    padding: 0;
+    margin: 0;
+}
+
+/** body 元素
+------------------------------------------------------------*/
+body {
+    // 页面内容居中
+    width: 100vw;
+    height: 100vh;
+    @include center();
+    // // 创建计数器
+    // counter-reset: lattice;
+}
+
+/** 棋盘 
+------------------------------------------------------------*/
+.chessboard {
+    width: 1000px;
+    height: 1000px;
+    position: relative;
+    @include center();
+}
+
+/** 棋盘内容
+------------------------------------------------------------*/
+.content {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    right: 100px;
+    width: 900px;
+    height: 1000px;
+    background-color: hsla(0, 0%, 0%, 0.3);
+    display: flex;
+    flex-flow: wrap row;
+    justify-content: space-between;
+    z-index: 99;
+}
+
+/** 格子
+------------------------------------------------------------*/
+.lattice {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    z-index: 99;
+    @include center();
+    // 递增计数器
+    // counter-increment: lattice;
+    // &::after {
+    //     position: absolute;
+    //     // 使用计数器
+    //     content: counter(lattice);
+    //     font-size: 20px;
+    //     top: 0;
+    //     left: 0;
+    //     width: 100%;
+    //     height: 100%;
+    //     font-weight: 900;
+    //     @include center();
+    //     z-index: inherit;
+    //     color: white;
+    // }
+}
+
+/** 棋子 
+------------------------------------------------------------*/
+.chess {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    font-size: 25px;
+    font-weight: 900;
+    background-color: rgb(255, 227, 190);
+    vertical-align: middle;
+    box-shadow: 3px 3px 3px 1px gray;
+    @include center();
+
+    /** 红色文本
+    ------------------------------------------------------------*/
+    &.red {
+        color: red;
+    }
+    
+    /** 黑色文本
+    ------------------------------------------------------------*/
+    &.black {
+        color: black;
+    }
+}
+
+/** 棋子文本
+------------------------------------------------------------*/
+.chess>span {
+    text-align: center;
+    height: 30px;
+    width: 30px;
+}
+
+/** 激活棋子
+------------------------------------------------------------*/
+.active {
+    box-shadow: 3px 3px 0.5em 1px white;
+}
+
+/** 格子激活
+------------------------------------------------------------*/
+.lattice-active {
+    background-color: hsla(0, 0%, 100%, 0.1);
+    border-radius: 50px;
+}
+
+/** 点位
+------------------------------------------------------------*/
+.point {
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
+    background-color: greenyellow;
+    position: absolute;
+    left: 40px;
+    top: 40px;
+}
+/** 隐藏点位
+------------------------------------------------------------*/
+.hidden {
+    display: none;
+}
