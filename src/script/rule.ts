@@ -183,10 +183,21 @@ export default class Rule {
     /**
      * 工具辅助函数 传入点位列表 自动判断边界并添加
      * @param data 点位列表
+     * @param edge 边界列表
      */
-    private utils(data: number[][]) {
+    private utils(data: number[][], edge?: number[][]) {
         for (const [x, y] of data) {
-            if (y <= 10 && y >= 1 && x <= 9 && x >= 1) this._goalList.push([x, y])
+
+            const LatticeInfo = this.getLatticeChessColor(y, x, this._color)
+
+            // 如果没有特别边界值限制
+            if (!edge) {
+                if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !LatticeInfo.homochromatic) this._goalList.push([x, y])
+            }
+            // 否则有
+            else {
+                if (edge[0].includes(x) && edge[1].includes(y) && !LatticeInfo.homochromatic) this._goalList.push([x, y])
+            }
         }
     }
 
@@ -204,48 +215,6 @@ export default class Rule {
         if (this._crossTheRiver) {
             if (this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y])
             if (this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y])
-        }
-    }
-
-
-    /** 
-     * 馬 马 
-     * 马走日
-     */
-    private horse(): void {
-        const point = [
-            // 上
-            [this._x + 1, this._y - 2, this._x, this._y - 1],
-            [this._x - 1, this._y - 2, this._x, this._y - 1],
-            // 下
-            [this._x + 1, this._y + 2, this._x, this._y + 1],
-            [this._x - 1, this._y + 2, this._x, this._y + 1],
-            // 左
-            [this._x - 2, this._y + 1, this._x - 1, this._y],
-            [this._x - 2, this._y - 1, this._x - 1, this._y],
-            // 右
-            [this._x + 2, this._y + 1, this._x + 1, this._y],
-            [this._x + 2, this._y - 1, this._x + 1, this._y]
-        ]
-        this.utils(point)
-    }
-    /** 
-     * 相 象 
-     * 象走田 无法过河
-     */
-    private elephant(): void {
-        if (!this._crossTheRiver) {
-            const point = [
-                // 右上
-                [this._x + 2, this._y + 2],
-                // 左上
-                [this._x - 2, this._y + 2],
-                // 左下
-                [this._x - 2, this._y - 2],
-                // 右下
-                [this._x + 2, this._y - 2]
-            ]
-            this.utils(point)
         }
     }
     /** 车 車 */
@@ -288,9 +257,7 @@ export default class Rule {
             [4, 5, 6],
             [1, 2, 3, 8, 9, 10]
         ]
-        for (const [x, y] of point) {
-            if (edge[1].includes(y) && edge[0].includes(x)) this._goalList.push([x, y])
-        }
+        this.utils(point, edge)
     }
     /** 将 帅 */
     private general(): void {
@@ -305,12 +272,49 @@ export default class Rule {
             [4, 5, 6],
             [1, 2, 3, 8, 9, 10]
         ]
-        for (const [x, y] of point) {
-            // 限制在九宫格中
-            if (edge[1].includes(y) && edge[0].includes(x)) {
-                // 确保相邻棋子不是同色
-                if (!this.getLatticeChessColor(y, x, this._color).homochromatic) this._goalList.push([x, y])
-            }
+        this.utils(point, edge)
+    }
+
+    /** 
+     * 馬 马 
+     * 马走日
+     * 马边上有棋子 则 这边无法过去
+     */
+    private horse(): void {
+        const point = [
+            // 上
+            [this._x + 1, this._y - 2, this._x, this._y - 1],
+            [this._x - 1, this._y - 2, this._x, this._y - 1],
+            // 下
+            [this._x + 1, this._y + 2, this._x, this._y + 1],
+            [this._x - 1, this._y + 2, this._x, this._y + 1],
+            // 左
+            [this._x - 2, this._y + 1, this._x - 1, this._y],
+            [this._x - 2, this._y - 1, this._x - 1, this._y],
+            // 右
+            [this._x + 2, this._y + 1, this._x + 1, this._y],
+            [this._x + 2, this._y - 1, this._x + 1, this._y]
+        ]
+        this.utils(point)
+    }
+    /** 
+     * 相 象 
+     * 象走田 无法过河
+     * 田中央有棋子无法过去
+     */
+    private elephant(): void {
+        if (!this._crossTheRiver) {
+            const point = [
+                // 右上
+                [this._x + 2, this._y + 2],
+                // 左上
+                [this._x - 2, this._y + 2],
+                // 左下
+                [this._x - 2, this._y - 2],
+                // 右下
+                [this._x + 2, this._y - 2]
+            ]
+            this.utils(point)
         }
     }
 }
