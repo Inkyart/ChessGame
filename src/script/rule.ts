@@ -116,12 +116,15 @@ export default class Rule {
     }
 
     /**
-     * 棋子炮的工具方法
+     * 棋子 车，炮的工具方法
      * @param x 格子x轴
      * @param y 格子y轴
      * @param firstChess 第一个棋子是否存在
+     * @param type 棋子类型
+     * - true 炮
+     * - false 车
      */
-    private gunUtil(x: number, y: number, firstChess: boolean): boolean {
+    private gunAndCarUtil(x: number, y: number, type: boolean, firstChess: boolean,): boolean {
         /** 获取对应格子信息 */
         const LatticeInfo: LatticeInfo = this.getLatticeChessColor(y, x, this._color)
         // 不存在棋子
@@ -131,10 +134,15 @@ export default class Rule {
         }
         // 存在一个棋子 且 第一个棋子不存在
         if (LatticeInfo.existenceChess && !firstChess) {
+            // 如果是车
+            if (!type) { 
+                // 如果是异色棋子
+                if (!LatticeInfo.homochromatic) this._goalList.push([x, y])
+            }
             return true
         }
-        // 存在棋子 第一个棋子存在 且 是异色棋子
-        if (LatticeInfo.existenceChess && firstChess && !LatticeInfo.homochromatic) {
+        // 类型是炮 存在棋子 第一个棋子存在 且 是异色棋子
+        if (type && LatticeInfo.existenceChess && firstChess && !LatticeInfo.homochromatic) {
             this._goalList.push([x, y])
             return true
         }
@@ -158,20 +166,29 @@ export default class Rule {
         for (let i = 1; i < 9; i++) {
             // 四条直线
             if (this._y - i >= 1) {
-                firstChess.up = this.gunUtil(this._x, this._y - i, firstChess.up)
+                firstChess.up = this.gunAndCarUtil(this._x, this._y - i, true, firstChess.up)
             }
             if (this._y + i <= 9) {
-                firstChess.down = this.gunUtil(this._x, this._y + i, firstChess.down)
+                firstChess.down = this.gunAndCarUtil(this._x, this._y + i, true, firstChess.down)
             }
             if (this._x - i >= 1) {
-                firstChess.left = this.gunUtil(this._x - i, this._y, firstChess.left)
+                firstChess.left = this.gunAndCarUtil(this._x - i, this._y, true, firstChess.left)
             }
             if (this._x + i <= 9) {
-                firstChess.right = this.gunUtil(this._x + i, this._y, firstChess.right)
+                firstChess.right = this.gunAndCarUtil(this._x + i, this._y, true, firstChess.right)
             }
         }
     }
 
+    /**
+     * 工具辅助函数 传入点位列表 自动判断边界并添加
+     * @param data 点位列表
+     */
+    private utils(data: number[][]) {
+        for(const [x, y] of data) {
+            if (y <= 10 && y >= 1 && x <= 9 && x >= 1) this._goalList.push([x, y])
+        }
+    }
 
     /** 
      * 棋子 兵 卒 
@@ -197,28 +214,64 @@ export default class Rule {
      */
     private horse(): void {
         const point = [
-            [this._x + 1, this._y - 2, /** this._x, this._y - 1 */],
-            [this._x - 1, this._y - 2, /** this._x, this._y - 1 */],
-            [this._x + 1, this._y + 2, /** this._x, this._y + 1 */],
-            [this._x - 1, this._y + 2, /** this._x, this._y + 1 */],
-            [this._x - 2, this._y + 1, /** this._x - 1, this._y */],
-            [this._x - 2, this._y - 1, /** this._x - 1, this._y */],
-            [this._x + 2, this._y + 1, /** this._x + 1, this._y */],
-            [this._x + 2, this._y - 1, /** this._x + 1, this._y */]
+            // 上
+            [this._x + 1, this._y - 2, this._x, this._y - 1],
+            [this._x - 1, this._y - 2, this._x, this._y - 1],
+            // 下
+            [this._x + 1, this._y + 2, this._x, this._y + 1],
+            [this._x - 1, this._y + 2, this._x, this._y + 1],
+            // 左
+            [this._x - 2, this._y + 1, this._x - 1, this._y],
+            [this._x - 2, this._y - 1, this._x - 1, this._y],
+            // 右
+            [this._x + 2, this._y + 1, this._x + 1, this._y],
+            [this._x + 2, this._y - 1, this._x + 1, this._y]
         ]
-        console.log(point)
-        for (const [x1, y1] of point) {
-            if (y1 <= 10 && y1 >= 1 && x1 <= 9 && x1 >= 1) this._goalList.push([x1, y1])
-        }
+        this.utils(point)
     }
-    /** 相 象 */
-    private elephant(): void { 
+    /** 
+     * 相 象 
+     * 象走田 无法过河
+     */
+    private elephant(): void {
         if (!this._crossTheRiver) {
-
+            const point = [
+                // 右上
+                [this._x + 2, this._y + 2],
+                // 左上
+                [this._x - 2, this._y + 2],
+                // 左下
+                [this._x - 2, this._y - 2],
+                // 右下
+                [this._x + 2, this._y - 2]
+            ]
+            this.utils(point)
         }
     }
     /** 车 車 */
-    private car(): void { }
+    private car(): void {
+        const firstChess = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        }
+        for (let i = 1; i < 9; i++) {
+            // 四条直线
+            if (this._y - i >= 1 && !firstChess.up) {
+                firstChess.up = this.gunAndCarUtil(this._x, this._y - i, false, firstChess.up)
+            }
+            if (this._y + i <= 9 && !firstChess.down) {
+                firstChess.down = this.gunAndCarUtil(this._x, this._y + i, false, firstChess.down)
+            }
+            if (this._x - i >= 1 && !firstChess.left) {
+                firstChess.left = this.gunAndCarUtil(this._x - i, this._y, false, firstChess.left)
+            }
+            if (this._x + i <= 9 && !firstChess.right) {
+                firstChess.right = this.gunAndCarUtil(this._x + i, this._y, false, firstChess.right)
+            }
+        }
+    }
     /** 士 仕 */
     private scholar(): void { }
     /** 将 帅 */
