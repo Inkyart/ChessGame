@@ -188,9 +188,29 @@ export default class Rule {
             if (this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y])
         }
     }
-    
+
     /** 馬 马 */
-    private horse(): void { }
+    private horse(): void {
+        // 前进两行 右移一格
+        if (this._y - 2 >= 1 && this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y - 2])
+        // 左移一格
+        if (this._y - 2 >= 1 && this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y - 2])
+
+        // 后退两行 右移一格
+        if (this._y + 2 <= 9 && this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y + 2])
+        // 左移一格
+        if (this._y + 2 <= 9 && this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y + 2])
+
+        // 右移两格 前进一行
+        if (this._y + 1 <= 9 && this._x + 2 <= 9) this._goalList.push([this._x + 2, this._y + 1])
+        // 后退一行
+        if (this._y + 1 <= 9 && this._x - 2 >= 1) this._goalList.push([this._x - 2, this._y + 1])
+
+        // 左移两格 前进一行
+        if (this._y - 1 >= 1 && this._x + 2 <= 9) this._goalList.push([this._x + 2, this._y - 1])
+        // 后退一行
+        if (this._y - 1 >= 1 && this._x - 2 >= 1) this._goalList.push([this._x - 2, this._y - 1])
+    }
     /** 相 象 */
     private elephant(): void { }
     /** 车 車 */
