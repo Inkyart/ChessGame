@@ -102,8 +102,12 @@ export default class Chess {
         this._removePoint = removePoint
         // 绑定单击事件
         this._chess.onclick = () => {
-            console.log(rule.method())
-            console.log(this.getInfo())
+            this._removePoint()
+            this._goalList = rule.method()
+            for(const i of this._goalList) {
+                const lattice = document.getElementsByClassName(`lattice row-${i[1]} column-${i[0]}`)[0]
+                lattice.children[0].className = 'point'
+            }
         }
     }
 }

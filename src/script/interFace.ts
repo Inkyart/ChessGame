@@ -48,7 +48,7 @@ export interface LatticeInfo {
     /** 是否存在棋子 */
     existenceChess: boolean
     /**  棋子颜色 */
-    color: string
+    color: boolean | null
     /** 是否同色 */
     homochromatic: boolean
 

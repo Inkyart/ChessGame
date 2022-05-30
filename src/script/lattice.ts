@@ -129,7 +129,7 @@ export default class Lattice {
     /** 清空点位 */
     removePoint(): boolean {
         const pointList = document.getElementsByClassName('point')
-        for (let i = 0; i < pointList.length; i++) pointList[i].remove()
+        for (let i = 0; i < pointList.length; i++) pointList[i].className += ' hidden'
         return true
     }
 }

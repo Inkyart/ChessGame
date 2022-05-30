@@ -90,8 +90,8 @@ body {
     background-color: rgb(255, 227, 190);
     vertical-align: middle;
     box-shadow: 3px 3px 3px 1px gray;
+    cursor: pointer;
     @include center();
-
     /** 红色文本
     ------------------------------------------------------------*/
     &.red {

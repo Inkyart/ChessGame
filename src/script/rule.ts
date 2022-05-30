@@ -93,14 +93,14 @@ export default class Rule {
      * @param column 格子的列号
      * @param color 当前判定的棋子颜色
      */
-    private getLatticeChessColor(row: number, column: number, color: string): LatticeInfo {
+    private getLatticeChessColor(row: number, column: number, color: boolean): LatticeInfo {
         /** 获取对应格子 */
         const lattice = document.getElementsByClassName(`lattice row-${row} column-${column}`)[0]
         /** 返回信息 */
         const result: LatticeInfo = {
             existenceChess: false,
-            color: '',
-            homochromatic: false
+            color: null,
+            homochromatic: true
         }
         // 如果格子中存在棋子 因为有隐藏点位存在 所以 棋子是格子的第二个子元素
         if (lattice.childElementCount > 1) {
@@ -108,10 +108,36 @@ export default class Rule {
 
             // 获取 第二个子元素
             const chess = lattice.children[1]
-            result.color = chess.classList[1]
+            result.color = chess.classList[1] === 'red'
             result.homochromatic = result.color === color
         }
         return result
+    }
+
+    /**
+     * 棋子炮的工具方法
+     * @param x 格子x轴
+     * @param y 格子y轴
+     * @param firstChess 第一个棋子是否存在
+     */
+    private gunUtil(x: number, y: number, firstChess: boolean): boolean {
+        /** 获取对应格子信息 */
+        const LatticeInfo: LatticeInfo = this.getLatticeChessColor(y, x, this._color)
+        // 不存在棋子
+        if (!firstChess && !LatticeInfo.existenceChess) {
+            this._goalList.push([x, y])
+            return false
+        }
+        // 存在一个棋子 且 第一个棋子不存在
+        if (LatticeInfo.existenceChess && !firstChess) {
+            return true
+        }
+        // 存在棋子 第一个棋子存在 且 是异色棋子
+        if (LatticeInfo.existenceChess && firstChess && !LatticeInfo.homochromatic) {
+            this._goalList.push([x, y])
+            return true
+        }
+        return firstChess
     }
 
     /** 
@@ -121,8 +147,27 @@ export default class Rule {
      * 以自己为起点的第二个异色棋子
      */
     private gun(): void {
-        for(let i = 1; i < 9; i++) {
-            if (this._y - i >= 1) this._goalList.push()
+        // 是否存在第一个棋子
+        const firstChess = {
+            up: false,
+            down: false,
+            left: false,
+            right: false
+        }
+        for (let i = 1; i < 9; i++) {
+            // 四条直线
+            if (this._y - i >= 1) {
+                firstChess.up = this.gunUtil(this._x, this._y - i, firstChess.up)
+            }
+            if (this._y + i <= 9) {
+                firstChess.down = this.gunUtil(this._x, this._y + i, firstChess.down)
+            }
+            if (this._x - i >= 1) {
+                firstChess.left = this.gunUtil(this._x - i, this._y, firstChess.left)
+            }
+            if (this._x + i <= 9) {
+                firstChess.right = this.gunUtil(this._x + i, this._y, firstChess.right)
+            }
         }
     }
 
@@ -136,13 +181,14 @@ export default class Rule {
         if (this._color) {
             if (this._y + 1 <= 9) this._goalList.push([this._x, this._y + 1])
         } else {
-            if (this._y - 1 >= 1) this._goalList.push([this._x, this._y + 1])
+            if (this._y - 1 >= 1) this._goalList.push([this._x, this._y - 1])
         }
         if (this._crossTheRiver) {
             if (this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y])
             if (this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y])
         }
     }
+    
     /** 馬 马 */
     private horse(): void { }
     /** 相 象 */
