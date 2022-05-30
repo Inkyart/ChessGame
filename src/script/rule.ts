@@ -99,7 +99,7 @@ export default class Rule {
         const result: LatticeInfo = {
             existenceChess: false,
             color: null,
-            homochromatic: true
+            homochromatic: false
         }
         /** 获取对应格子 */
         const lattice = document.getElementsByClassName(`lattice row-${row} column-${column}`)[0]
@@ -135,7 +135,7 @@ export default class Rule {
         // 存在一个棋子 且 第一个棋子不存在
         if (LatticeInfo.existenceChess && !firstChess) {
             // 如果是车
-            if (!type) { 
+            if (!type) {
                 // 如果是异色棋子
                 if (!LatticeInfo.homochromatic) this._goalList.push([x, y])
             }
@@ -185,7 +185,7 @@ export default class Rule {
      * @param data 点位列表
      */
     private utils(data: number[][]) {
-        for(const [x, y] of data) {
+        for (const [x, y] of data) {
             if (y <= 10 && y >= 1 && x <= 9 && x >= 1) this._goalList.push([x, y])
         }
     }
@@ -272,8 +272,45 @@ export default class Rule {
             }
         }
     }
-    /** 士 仕 */
-    private scholar(): void { }
+    /** 
+     * 士 仕 
+     * 只能沿着九宫格交叉线走
+     */
+    private scholar(): void {
+        const point = [
+            [this._x + 1, this._y + 1],
+            [this._x + 1, this._y - 1],
+            [this._x - 1, this._y - 1],
+            [this._x - 1, this._y + 1]
+        ]
+        // 边界值 限制在九宫格中
+        const edge = [
+            [4, 5, 6],
+            [1, 2, 3, 8, 9, 10]
+        ]
+        for (const [x, y] of point) {
+            if (edge[1].includes(y) && edge[0].includes(x)) this._goalList.push([x, y])
+        }
+    }
     /** 将 帅 */
-    private general(): void { }
+    private general(): void {
+        const point = [
+            [this._x + 1, this._y],
+            [this._x - 1, this._y],
+            [this._x, this._y - 1],
+            [this._x, this._y + 1]
+        ]
+        // 边界值 限制在九宫格中
+        const edge = [
+            [4, 5, 6],
+            [1, 2, 3, 8, 9, 10]
+        ]
+        for (const [x, y] of point) {
+            // 限制在九宫格中
+            if (edge[1].includes(y) && edge[0].includes(x)) {
+                // 确保相邻棋子不是同色
+                if (!this.getLatticeChessColor(y, x, this._color).homochromatic) this._goalList.push([x, y])
+            }
+        }
+    }
 }
