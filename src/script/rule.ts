@@ -94,16 +94,17 @@ export default class Rule {
      * @param color 当前判定的棋子颜色
      */
     private getLatticeChessColor(row: number, column: number, color: boolean): LatticeInfo {
-        /** 获取对应格子 */
-        const lattice = document.getElementsByClassName(`lattice row-${row} column-${column}`)[0]
+
         /** 返回信息 */
         const result: LatticeInfo = {
             existenceChess: false,
             color: null,
             homochromatic: true
         }
+        /** 获取对应格子 */
+        const lattice = document.getElementsByClassName(`lattice row-${row} column-${column}`)[0]
         // 如果格子中存在棋子 因为有隐藏点位存在 所以 棋子是格子的第二个子元素
-        if (lattice.childElementCount > 1) {
+        if (lattice?.childElementCount > 1) {
             result.existenceChess = true
 
             // 获取 第二个子元素
@@ -189,30 +190,33 @@ export default class Rule {
         }
     }
 
-    /** 馬 马 */
+
+    /** 
+     * 馬 马 
+     * 马走日
+     */
     private horse(): void {
-        // 前进两行 右移一格
-        if (this._y - 2 >= 1 && this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y - 2])
-        // 左移一格
-        if (this._y - 2 >= 1 && this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y - 2])
-
-        // 后退两行 右移一格
-        if (this._y + 2 <= 9 && this._x + 1 <= 9) this._goalList.push([this._x + 1, this._y + 2])
-        // 左移一格
-        if (this._y + 2 <= 9 && this._x - 1 >= 1) this._goalList.push([this._x - 1, this._y + 2])
-
-        // 右移两格 前进一行
-        if (this._y + 1 <= 9 && this._x + 2 <= 9) this._goalList.push([this._x + 2, this._y + 1])
-        // 后退一行
-        if (this._y + 1 <= 9 && this._x - 2 >= 1) this._goalList.push([this._x - 2, this._y + 1])
-
-        // 左移两格 前进一行
-        if (this._y - 1 >= 1 && this._x + 2 <= 9) this._goalList.push([this._x + 2, this._y - 1])
-        // 后退一行
-        if (this._y - 1 >= 1 && this._x - 2 >= 1) this._goalList.push([this._x - 2, this._y - 1])
+        const point = [
+            [this._x + 1, this._y - 2, /** this._x, this._y - 1 */],
+            [this._x - 1, this._y - 2, /** this._x, this._y - 1 */],
+            [this._x + 1, this._y + 2, /** this._x, this._y + 1 */],
+            [this._x - 1, this._y + 2, /** this._x, this._y + 1 */],
+            [this._x - 2, this._y + 1, /** this._x - 1, this._y */],
+            [this._x - 2, this._y - 1, /** this._x - 1, this._y */],
+            [this._x + 2, this._y + 1, /** this._x + 1, this._y */],
+            [this._x + 2, this._y - 1, /** this._x + 1, this._y */]
+        ]
+        console.log(point)
+        for (const [x1, y1] of point) {
+            if (y1 <= 10 && y1 >= 1 && x1 <= 9 && x1 >= 1) this._goalList.push([x1, y1])
+        }
     }
     /** 相 象 */
-    private elephant(): void { }
+    private elephant(): void { 
+        if (!this._crossTheRiver) {
+
+        }
+    }
     /** 车 車 */
     private car(): void { }
     /** 士 仕 */
