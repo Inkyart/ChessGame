@@ -1,12 +1,12 @@
-import { LatticeInfo } from './interFace';
 /**
  * @file 象棋的规则文件
  * @author 夜明筱笙
  */
 
-/** 导入棋子 */
+// 导入棋子
 import Chess from "./chess";
-
+// 导入接口
+import { LatticeInfo } from './interFace';
 /**
  * 规则类
  */
@@ -283,19 +283,38 @@ export default class Rule {
     private horse(): void {
         const point = [
             // 上
-            [this._x + 1, this._y - 2, this._x, this._y - 1],
-            [this._x - 1, this._y - 2, this._x, this._y - 1],
+            // 右上偏上 前一点位 右一点位
+            [this._x + 1, this._y - 2, this._x, this._y - 1, this._x + 1, this._y],
+            // 左上偏上 前一点位 左一点位
+            [this._x - 1, this._y - 2, this._x, this._y - 1, this._x - 1, this._y],
             // 下
-            [this._x + 1, this._y + 2, this._x, this._y + 1],
-            [this._x - 1, this._y + 2, this._x, this._y + 1],
+            // 右下偏下 后一点位 右一点位
+            [this._x + 1, this._y + 2, this._x, this._y + 1, this._x + 1, this._y],
+            // 左下偏下 后一点位 左一点位
+            [this._x - 1, this._y + 2, this._x, this._y + 1, this._x - 1, this._y],
             // 左
-            [this._x - 2, this._y + 1, this._x - 1, this._y],
-            [this._x - 2, this._y - 1, this._x - 1, this._y],
+            // 左上偏左 左一点位 上一点位
+            [this._x - 2, this._y + 1, this._x - 1, this._y, this._x, this._y + 1],
+            // 左下偏左 左一点位 下一点味
+            [this._x - 2, this._y - 1, this._x - 1, this._y, this._x, this._y - 1],
             // 右
-            [this._x + 2, this._y + 1, this._x + 1, this._y],
-            [this._x + 2, this._y - 1, this._x + 1, this._y]
+            // 右下偏右 右一点位 下一点位
+            [this._x + 2, this._y + 1, this._x + 1, this._y, this._x, this._y + 1],
+            // 右上偏右 右一点位 上一点位
+            [this._x + 2, this._y - 1, this._x + 1, this._y, this._x, this._y - 1]
         ]
-        this.utils(point)
+        for(const [x, y, edgeX1, edgeY1, edgeX2, edgeY2] of point) {
+            const 
+                // 点位格子信息
+                _LatticeInfo = this.getLatticeChessColor(y, x, this._color),
+                // 当前棋子移动方向边上格子信息 1
+                _EdgeLatticeInfoOne = this.getLatticeChessColor(edgeY1, edgeX1, this._color),
+                // 当前棋子移动方向边上格子信息 2
+                _EdgeLatticeInfoTwo = this.getLatticeChessColor(edgeY2, edgeX2, this._color)
+            if (_EdgeLatticeInfoOne.existenceChess && _EdgeLatticeInfoTwo.existenceChess) break
+
+            if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !_LatticeInfo.homochromatic) this._goalList.push([x, y])
+        }
     }
     /** 
      * 相 象 
