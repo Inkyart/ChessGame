@@ -1,4 +1,4 @@
-export default [
+[
 	{ "goal": 0,  "text": "车", "color": true  },
 	{ "goal": 1,  "text": "马", "color": true  },
 	{ "goal": 2,  "text": "相", "color": true  },

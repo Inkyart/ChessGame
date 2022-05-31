@@ -5,19 +5,25 @@
  */
 import { PointData } from './interFace';
 
+/**
+ * 获取棋子点位函数
+ * @param x 棋子x坐标
+ * @param y 棋子y坐标
+ * @param text 棋子文本
+ * @param crossTheRiver 棋子是否过河 
+ */
 export default function (x: number, y: number, text: string, crossTheRiver?: boolean): PointData {
     if (["兵", "卒"].includes(text)) {
-        if (crossTheRiver) {
+        // 未过河
+        if (!crossTheRiver) {
             return {
                 point: [
-                    [x, y + 1],
-                    [x, y - 1]
+                    text === '兵' ? [x, y + 1] : [x, y - 1]
                 ]
             }
         } else return {
             point: [
-                [x, y + 1],
-                [x, y - 1],
+                text === '兵' ? [x, y + 1] : [x, y - 1],
                 [x + 1, y],
                 [x - 1, y]
             ]

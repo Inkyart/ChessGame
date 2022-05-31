@@ -20,9 +20,6 @@ export default class Rule {
     /** 需要判定的 棋子 颜色 */
     private _color: boolean;
 
-    /** 需要判定的 棋子 当前坐标 */
-    private _goal: number[];
-
     /** 需要判定的 棋子 是否过河 */
     private _crossTheRiver: boolean;
 
@@ -52,6 +49,15 @@ export default class Rule {
     /** 边界 */
     private _edge: number[][]
 
+    /** 需要获取点位的棋子 */
+    private _needGetPoint: string[] =  [
+        "兵", "卒",
+        "马", "馬",
+        "相", "象",
+        "士", "仕",
+        "将", "帅"
+    ]
+
     /**
      * @param chess 需要判定的棋子本身
      */
@@ -62,9 +68,7 @@ export default class Rule {
         const chessInfo = this._chess.getInfo();
         this._color = chessInfo.chess_color
         this._text = chessInfo.chess_text;
-        this._x = chessInfo.chess_coordinate[0]
-        this._y = chessInfo.chess_coordinate[1]
-        this.updateInfo();
+        [this._x, this._y] = chessInfo.chess_coordinate
         this.rule();
     }
 
@@ -95,10 +99,13 @@ export default class Rule {
         const chessInfo = this._chess.getInfo();
         [this._x, this._y] = chessInfo.chess_coordinate;
         this._crossTheRiver = chessInfo.chess_crossTheRiver;
-        // 获取点位信息
-        const { point, edge } = PointData(this._x, this._y, this._text, this._crossTheRiver)
-        this._point = point
-        this._edge = edge
+
+        if (this._needGetPoint.includes(this._text)) {
+            // 获取点位信息
+            const { point, edge } = PointData(this._x, this._y, this._text, this._crossTheRiver)
+            this._point = point
+            this._edge = edge
+        }
     }
 
     /**
@@ -123,7 +130,7 @@ export default class Rule {
             // 获取 第二个子元素
             const chess = lattice.children[1]
             result.color = chess.classList[1] === 'red'
-            result.homochromatic = result.color && this._color
+            result.homochromatic = result.color === this._color
         }
         return result
     }
