@@ -311,7 +311,8 @@ export default class Rule {
                 _EdgeLatticeInfoOne = this.getLatticeChessColor(edgeY1, edgeX1, this._color),
                 // 当前棋子移动方向边上格子信息 2
                 _EdgeLatticeInfoTwo = this.getLatticeChessColor(edgeY2, edgeX2, this._color)
-            if (_EdgeLatticeInfoOne.existenceChess && _EdgeLatticeInfoTwo.existenceChess) break
+            // 如果 两个边界格子都存在棋子则跳过当前循环
+            if (_EdgeLatticeInfoOne.existenceChess && _EdgeLatticeInfoTwo.existenceChess) continue
 
             if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !_LatticeInfo.homochromatic) this._goalList.push([x, y])
         }
@@ -325,15 +326,26 @@ export default class Rule {
         if (!this._crossTheRiver) {
             const point = [
                 // 右上
-                [this._x + 2, this._y + 2],
+                [this._x + 2, this._y + 2, this._x + 1, this._y + 1],
                 // 左上
-                [this._x - 2, this._y + 2],
+                [this._x - 2, this._y + 2, this._x - 1, this._y + 1],
                 // 左下
-                [this._x - 2, this._y - 2],
+                [this._x - 2, this._y - 2, this._x - 1, this._y - 1],
                 // 右下
-                [this._x + 2, this._y - 2]
+                [this._x + 2, this._y - 2, this._x + 1, this._y - 1]
             ]
-            this.utils(point)
+
+            for(const [x, y, edgeX, edgeY] of point) {
+                const 
+                    // 点位格子信息
+                    _LatticeInfo = this.getLatticeChessColor(y, x, this._color),
+                    // 当前棋子移动方向边上格子信息
+                    _EdgeLatticeInfo = this.getLatticeChessColor(edgeY, edgeX, this._color)
+                // 如果 两个边界格子都存在棋子则跳过当前循环
+                if (_EdgeLatticeInfo.existenceChess) continue
+    
+                if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !_LatticeInfo.homochromatic) this._goalList.push([x, y])
+            }
         }
     }
 }
