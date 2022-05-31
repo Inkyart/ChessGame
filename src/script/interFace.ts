@@ -51,7 +51,27 @@ export interface LatticeInfo {
     color: boolean | null
     /** 是否同色 */
     homochromatic: boolean
+}
 
+/** 
+ * 字符串索引
+ */
+export interface StringIndex {
+    [index: string]: boolean
+}
+
+/** 第一个棋子是否存在 */
+export interface FirstChess extends StringIndex {
+    up: boolean
+    down: boolean
+    right: boolean
+    left: boolean
+}
+
+/** 点位数据 */
+export interface PointData {
+    point: number[][]
+    edge?: number[][]
 }
 
 /** 棋子规则 */
