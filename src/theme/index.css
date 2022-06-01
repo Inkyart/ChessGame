@@ -63,9 +63,9 @@ body {
   border-radius: 50px;
   font-size: 25px;
   font-weight: 900;
-  background-color: #ffe3be;
+  background-color: #f8d6a9;
   vertical-align: middle;
-  box-shadow: 3px 3px 3px 1px gray;
+  box-shadow: 1px 1px 0.5em 1px gray, inset -1px -1px 0.1em 0.05em rgba(31, 31, 31, 0.5), 2px 2px 0.1em 0.1em black;
   cursor: pointer;
   display: flex;
   flex-flow: nowrap row;
@@ -90,7 +90,7 @@ body {
 /** 激活棋子
 ------------------------------------------------------------*/
 .active {
-  box-shadow: 3px 3px 0.5em 1px white; }
+  box-shadow: 3px 3px 3px 1px gray, inset -1px -1px 0.2em 1px #8d8d8d; }
 
 /** 格子激活
 ------------------------------------------------------------*/
@@ -107,7 +107,8 @@ body {
   background-color: greenyellow;
   position: absolute;
   left: 40px;
-  top: 40px; }
+  top: 40px;
+  cursor: pointer; }
 
 /** 隐藏点位
 ------------------------------------------------------------*/

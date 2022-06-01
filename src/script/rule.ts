@@ -180,7 +180,7 @@ export default class Rule {
         for (let i = 1; i < 9; i++) {
             // 四条直线
             if (this._y - i >= 1) this.gunAndCarUtil(this._x, this._y - i, "up")
-            if (this._y + i <= 9) this.gunAndCarUtil(this._x, this._y + i, "down")
+            if (this._y + i <= 10) this.gunAndCarUtil(this._x, this._y + i, "down")
             if (this._x - i >= 1) this.gunAndCarUtil(this._x - i, this._y, "left")
             if (this._x + i <= 9) this.gunAndCarUtil(this._x + i, this._y, "right")
         }

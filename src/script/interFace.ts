@@ -3,6 +3,29 @@
  * @author 夜明筱笙
 */
 
+import Chess from "./chess"
+
+/** 全局变量 */
+export interface Env {
+    /** 当前单击棋子 */
+    Chess: HTMLDivElement | null
+    /** 当前单击棋子颜色 */
+    ChessColor: boolean | null
+    /** 悔棋列表 */
+    ChessList: Array<Chess>
+    /** 当前移动棋子次数 */
+    MoveCount: number
+    /** 当前是否有棋子激活 */
+    active: boolean
+    /** 
+     * 当前是哪一方棋子 
+     * - true red
+     * - false black
+     */
+    color: boolean | null
+
+}
+
 /**
  * 用于规范棋子信息
 */

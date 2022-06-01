@@ -87,17 +87,20 @@ body {
     border-radius: 50px;
     font-size: 25px;
     font-weight: 900;
-    background-color: rgb(255, 227, 190);
+    background-color: rgb(248, 214, 169);
     vertical-align: middle;
-    box-shadow: 3px 3px 3px 1px gray;
+    box-shadow: 1px 1px 0.5em 1px gray,
+        inset -1px -1px 0.1em .05em rgba(31, 31, 31, .5),
+        2px 2px .1em .1em black;
     cursor: pointer;
     @include center();
+
     /** 红色文本
     ------------------------------------------------------------*/
     &.red {
         color: red;
     }
-    
+
     /** 黑色文本
     ------------------------------------------------------------*/
     &.black {
@@ -116,7 +119,8 @@ body {
 /** 激活棋子
 ------------------------------------------------------------*/
 .active {
-    box-shadow: 3px 3px 0.5em 1px white;
+    box-shadow: 3px 3px 3px 1px gray,
+        inset -1px -1px .2em 1px rgb(141, 141, 141);
 }
 
 /** 格子激活
@@ -136,7 +140,9 @@ body {
     position: absolute;
     left: 40px;
     top: 40px;
+    cursor: pointer;
 }
+
 /** 隐藏点位
 ------------------------------------------------------------*/
 .hidden {

@@ -6,6 +6,7 @@
 
 
 /** 导入接口 */
+import Env from "./Env"
 import { ChessInfo } from "./interFace"
 import Rule from "./rule"
 
@@ -19,9 +20,6 @@ export default class Chess {
      * - 1 为 y 坐标
      */
     private _coordinate: number[]
-
-    /** 棋子序号 */
-    private _orderNumber: number
 
     /** 棋子文本 */
     private _text: string
@@ -54,12 +52,11 @@ export default class Chess {
      * @param coordinate 棋子初始坐标
      * @param text 棋子文本
      */
-    constructor(coordinate: number[], text: string, color: boolean, orderNumber: number) {
+    constructor(coordinate: number[], text: string, color: boolean) {
         this._color = color
         this._coordinate = coordinate
         this._coordinateList.push(this._coordinate)
         this._text = text
-        this._orderNumber = orderNumber
     }
 
 
@@ -82,7 +79,7 @@ export default class Chess {
 
     /** 获取棋子信息 */
     public getInfo(): ChessInfo {
-        if (this._color) this._crossTheRiver = this._coordinate[1] > 5 
+        if (this._color) this._crossTheRiver = this._coordinate[1] > 5
         else this._crossTheRiver = this._coordinate[1] < 6
 
         return {
@@ -98,16 +95,45 @@ export default class Chess {
 
 
     /** 用于添加事件 */
-    public addEvent(rule: Rule, removePoint: Function): void {
-        this._removePoint = removePoint
+    public addEvent(rule: Rule): void {
         // 绑定单击事件
         this._chess.onclick = () => {
-            this._removePoint()
-            this._goalList = rule.method()
-            for(const i of this._goalList) {
-                const lattice = document.getElementsByClassName(`lattice row-${i[1]} column-${i[0]}`)[0]
-                lattice.children[0].className = 'point'
+            // 如果当前没有棋子激活 或 现在是当前棋子颜色方行动
+            if (!Env.active || Env.ChessColor === Env.color) {
+                // 删除所有棋子的 active
+                const chess = document.getElementsByClassName('chess active')[0]
+                if (chess) chess.className = `${chess.classList[0]} ${chess.classList[1]}`
+                this.resPoint()
+                this._chess.className += ' active'
+                // 获取可到达坐标
+                this._goalList = rule.method()
+                // 遍历坐标显示点位
             }
         }
+        // const cEvent = new CustomEvent('a', {
+        //     detail: {
+
+        //     }
+        // })
+        // this._chess.addEventListener('a', e => {
+
+        // })
+        // this._chess.dispatchEvent(cEvent)
+    }
+
+    /** 重置所有点位 */
+    private resPoint(): void {
+        // 首先删除所有点位
+        this.removePoint()
+        for (const i of this._goalList) {
+            const lattice = document.getElementsByClassName(`lattice row-${i[1]} column-${i[0]}`)[0]
+            lattice.children[0].className = 'point show'
+        }
+    }
+
+    /** 删除所有点位 */
+    private removePoint(): void {
+        const pointList = document.getElementsByClassName('point show')
+        for (let i = 0; i < pointList.length; i++) pointList[i].className = 'point hidden'
     }
 }

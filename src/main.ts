@@ -10,7 +10,7 @@ import Init from "./script/Init";
 
 // 导入默认数据
 import data from './data/default.json'
-// import testData from './data/test.json'
+
 
 /** 先初始化 棋盘 */
 const init = new Init()

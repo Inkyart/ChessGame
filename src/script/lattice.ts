@@ -6,6 +6,7 @@
 
 /** 导入棋子模块 */
 import Chess from "./chess"
+import Env from "./Env"
 /** 导入棋子初始化信息 */
 import { InitInfo } from "./interFace"
 import Rule from "./rule"
@@ -84,11 +85,10 @@ export default class Lattice {
         const chess = new Chess(
             [this._column, this._row],
             this._infoList[this._index].text,
-            this._infoList[this._index].color,
-            this._infoList[this._index].goal
+            this._infoList[this._index].color
         )
         const rule = new Rule(chess)
-        chess.addEvent(rule, this.removePoint)
+        chess.addEvent(rule)
         this.addLattice(chess.create())
         this._chessList.push(chess) // 将 棋子 添加到 棋子列表中
         this._index++
@@ -107,6 +107,8 @@ export default class Lattice {
         const point: HTMLDivElement = document.createElement('div')
         // 为 格子 设置 类名
         lattice.setAttribute('class', `lattice row-${this._row} column-${this._column} serial-${this._order}`)
+        // 为格子添加单击事件
+        this.addEvent(lattice)
         // 为 点位 设置 类名
         point.setAttribute('class', 'point hidden')
         // 将 点位 添加 到 格子 中
@@ -124,12 +126,20 @@ export default class Lattice {
         return this._chessList
     }
 
-
-
-    /** 清空点位 */
-    removePoint(): boolean {
-        const pointList = document.getElementsByClassName('point')
-        for (let i = 0; i < pointList.length; i++) pointList[i].className += ' hidden'
-        return true
+    addEvent(lattice: HTMLDivElement): void {
+        lattice.onclick = e => {
+            // 首先获取当前格子中是否有显示的点位
+            const showPoint = lattice.children[0].classList.length <= 1
+            // 如果有显示点位
+            if (showPoint) {
+                // 如果有棋子存在
+                if (lattice.children[1]) {
+                    // 删除当前激活棋子
+                    // 将棋子添加到当前格子下
+                    lattice.appendChild(Env.Chess)
+                    Env.Chess.remove()
+                }
+            }
+        }
     }
 }
