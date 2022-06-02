@@ -50,7 +50,7 @@ export default class Rule {
     private _edge: number[][]
 
     /** 需要获取点位的棋子 */
-    private _needGetPoint: string[] =  [
+    private _needGetPoint: string[] = [
         "兵", "卒",
         "马", "馬",
         "相", "象",
@@ -78,7 +78,7 @@ export default class Rule {
         // 更新棋子数据
         this.updateInfo();
         this._method();
-        return this.getGoalList();
+        return this._goalList;
     }
 
     /** 判定棋子规则 */
@@ -86,11 +86,6 @@ export default class Rule {
         if (["兵", "卒", "将", "帅", "士", "仕"].includes(this._text)) this._method = this.currency
         else if (["马", "馬", "相", "象"].includes(this._text)) this._method = this.horseAndElephant
         else if (["车", "車", "炮"].includes(this._text)) this._method = this.gunAndCar
-    }
-
-    /** 获取棋子可移动坐标组 */
-    private getGoalList(): number[][] {
-        return this._goalList;
     }
 
     /** 更新棋子数据 */
@@ -148,7 +143,7 @@ export default class Rule {
                 /** 马有两个边界格子 */
                 _EdgeLatticeList = [this.getLatticeChessInfo(edgeY1, edgeX1).existenceChess]
             /** 如果当前棋子是马 */
-            if (['马', '馬'].includes(this._text)) _EdgeLatticeList.push(this.getLatticeChessInfo(edgeY2, edgeX2).existenceChess)
+            // if (['马', '馬'].includes(this._text)) _EdgeLatticeList.push(this.getLatticeChessInfo(edgeY2, edgeX2).existenceChess)
             // 如果边界格子都存在棋子则跳过当前循环
             if (!_EdgeLatticeList.includes(false)) continue
 
@@ -177,6 +172,7 @@ export default class Rule {
      * 炮和车共有函数
      */
     private gunAndCar() {
+        this._firstChess.up = this._firstChess.down = this._firstChess.left = this._firstChess.right = false
         for (let i = 1; i < 9; i++) {
             // 四条直线
             if (this._y - i >= 1) this.gunAndCarUtil(this._x, this._y - i, "up")
