@@ -6,29 +6,41 @@
 import Chess from "./chess"
 
 /** 全局变量 */
-export interface Env {
+export interface Variable extends StringIndex<any> {
     /** 当前单击棋子 */
-    Chess: HTMLDivElement | null
+    Chess: Chess | null
     /** 当前单击棋子颜色 */
     ChessColor: boolean | null
-    /** 悔棋列表 */
+    /** 棋子列表 */
     ChessList: Array<Chess>
     /** 当前移动棋子次数 */
     MoveCount: number
     /** 当前是否有棋子激活 */
-    active: boolean
+    Active: boolean
     /** 
      * 当前是哪一方棋子 
      * - true red
      * - false black
      */
-    color: boolean | null
-
+    Color: boolean
+    /** 被吃棋子列表 [被吃棋子，被吃时的移动次数]*/
+    EatChessList: Array<[Chess, number]>
+    /** 移动坐标列表 */
+    MoveList: number[][]
+}
+/** 全局变量修改结果返回值 */
+export interface SetVariable<T> {
+    /** 变更字段 */
+    changeFields: string
+    /** 旧值 */
+    oldValue: T | null
+    /** 新值 */
+    newValue: T
+    /** 是否修改成功 */
+    success: boolean
 }
 
-/**
- * 用于规范棋子信息
-*/
+/** 用于规范棋子信息 */
 export interface ChessInfo {
     /** 棋子是否激活 */
     chess_active: boolean
@@ -46,11 +58,11 @@ export interface ChessInfo {
     chess_coordinate: number[]
     /** 棋子是否过河 */
     chess_crossTheRiver: boolean
+    /** 棋子移动计数列表 */
+    chess_moveCount: number[]
 }
 
-/**
- * 棋子初始信息
- */
+/** 棋子初始信息 */
 export interface InitInfo {
     /** 棋子初始坐标 */
     goal: number
@@ -64,9 +76,7 @@ export interface InitInfo {
     color: boolean
 }
 
-/**
- * 格子信息
- */
+/** 格子信息 */
 export interface LatticeInfo {
     /** 是否存在棋子 */
     existenceChess: boolean
@@ -76,15 +86,17 @@ export interface LatticeInfo {
     homochromatic: boolean
 }
 
-/** 
- * 字符串索引
- */
-export interface StringIndex {
-    [index: string]: boolean
+/**  字符串索引 */
+export interface StringIndex<T> {
+    [index: string]: T
+}
+/** 数字索引 */
+export interface NumberIndex<T> {
+    [index: number]: T
 }
 
 /** 第一个棋子是否存在 */
-export interface FirstChess extends StringIndex {
+export interface FirstChess extends StringIndex<boolean> {
     up: boolean
     down: boolean
     right: boolean

@@ -137,7 +137,7 @@ export default class Rule {
         for (let i = 0; i < this._point.length; i++) {
             const
                 /** 结构赋值 */
-                [x, y, edgeX1, edgeY1, edgeX2, edgeY2] = [...this._point[i], ...this._edge[i]],
+                [x, y, edgeX1, edgeY1] = [...this._point[i], ...this._edge[i]],
                 /** 马 象 都有至少一个边界格子判定棋子存在 */
                 _LatticeInfo = this.getLatticeChessInfo(y, x),
                 /** 马有两个边界格子 */
