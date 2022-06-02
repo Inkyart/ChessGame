@@ -18,17 +18,19 @@ export default class Init {
 	private _size: number
 
 	/** 格子初始 x 坐标 */
-	private _x: number = 0
+	private _x: number = 50
 
 	/** 格子初始 y 坐标 */
-	private _y: number = 0
+	private _y: number = 50
 
 	constructor() {
 		/** 设置 canvas 宽高 */
-		this._canvas.height = 900
-		this._canvas.width = 800
+		this._canvas.height = 1000
+		this._canvas.width = 900
 		/** 设置 格子 大小 */
-		this._size = this._canvas.height / 9
+		this._size = (this._canvas.height - 100) / 9
+        this._ctx.fillStyle = 'rgb(255, 150, 70)'
+        this._ctx.fillRect(0, 0, 900, 1000)
 		/** 开始绘制棋盘 */
 		this.drawLattice()
 	}
@@ -55,7 +57,7 @@ export default class Init {
 				this._x += this._size;
 			}
 			// 一行结束，x 坐标归零
-			this._x = 0
+			this._x = 50
 			// y 坐标加一 表示新一行
 			this._y += this._size
 		}
