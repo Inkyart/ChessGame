@@ -138,15 +138,10 @@ export default class Rule {
             const
                 /** 结构赋值 */
                 [x, y, edgeX1, edgeY1] = [...this._point[i], ...this._edge[i]],
-                /** 马 象 都有至少一个边界格子判定棋子存在 */
-                _LatticeInfo = this.getLatticeChessInfo(y, x),
-                /** 马有两个边界格子 */
-                _EdgeLatticeList = [this.getLatticeChessInfo(edgeY1, edgeX1).existenceChess]
-            /** 如果当前棋子是马 */
-            // if (['马', '馬'].includes(this._text)) _EdgeLatticeList.push(this.getLatticeChessInfo(edgeY2, edgeX2).existenceChess)
+                /** 马 象 都有一个边界格子判定棋子存在 */
+                _LatticeInfo = this.getLatticeChessInfo(y, x)
             // 如果边界格子都存在棋子则跳过当前循环
-            if (!_EdgeLatticeList.includes(false)) continue
-
+            if (this.getLatticeChessInfo(edgeY1, edgeX1).existenceChess) continue
             if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !_LatticeInfo.homochromatic) this._goalList.push([x, y])
         }
     }
