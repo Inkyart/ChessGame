@@ -8,7 +8,9 @@ import Chess from "./chess"
 /** 全局变量 */
 export interface Variable extends StringIndex<any> {
     /** 当前单击棋子 */
-    Chess: Chess | null
+    OnclickChess: Chess | null
+    /** 原先单击棋子 */
+    OldOnclickChess: Chess | null
     /** 当前单击棋子颜色 */
     ChessColor: boolean | null
     /** 棋子列表 */
@@ -27,9 +29,13 @@ export interface Variable extends StringIndex<any> {
     EatChessList: Array<[Chess, number]>
     /** 移动坐标列表 */
     MoveList: number[][]
+    /** 重置方法 */
+    Reset: Function
+    /** 撤销方法 */
+    revokeMove: Function
 }
 /** 全局变量修改结果返回值 */
-export interface SetVariable<T> {
+export interface SetVariables<T> {
     /** 变更字段 */
     changeFields: string
     /** 旧值 */
@@ -96,11 +102,11 @@ export interface NumberIndex<T> {
 }
 
 /** 第一个棋子是否存在 */
-export interface FirstChess extends StringIndex<boolean> {
-    up: boolean
-    down: boolean
-    right: boolean
-    left: boolean
+export interface existenceChess extends StringIndex<[boolean, boolean]> {
+    up: [boolean, boolean]
+    down: [boolean, boolean]
+    right: [boolean, boolean]
+    left: [boolean, boolean]
 }
 
 /** 点位数据 */

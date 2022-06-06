@@ -6,10 +6,10 @@
 
 /** 导入棋子模块 */
 import Chess from "./chess"
-import Env from "./Env"
 /** 导入棋子初始化信息 */
 import { InitInfo } from "./interFace"
 import Rule from "./rule"
+import { onclickLattice, operateList, removeChess } from "./utils"
 
 
 /**
@@ -36,9 +36,18 @@ export default class Lattice {
         this.draw()
     }
 
+    /**
+     * 重置棋盘
+     * @param infoList 棋子数据列表
+     */
+    public reset(infoList: Array<InitInfo>): void {
+        this._infoList = infoList
+        removeChess()
+        this.draw()
+    }
 
     /** 用于生成 90 个格子 */
-    draw(): void {
+    private draw(): void {
         for (; this._order < 90; this._order++) {
             /**
              * 如果 列数 大于 9
@@ -61,24 +70,8 @@ export default class Lattice {
         }
     }
 
-
-
-    /** 删除所有棋子 */
-    removeChess(): void {
-        /** chess 用于获取所有棋子 */
-        const chess: HTMLCollectionOf<Element> = document.getElementsByClassName('.chess')
-        /** 
-         * 遍历获取的棋子数组
-         * 然后调用父节点的删除子元素方法
-         * 删除对应的棋子元素
-         */
-        for (let item = 0; item < chess.length; item++) chess[item].parentNode.removeChild(chess[item])
-    }
-
-
-
     /** 添加 棋子 */
-    addChess(): void {
+    private addChess(): void {
         /** 创建棋子 */
         const chess = new Chess(
             [this._column, this._row],
@@ -88,14 +81,14 @@ export default class Lattice {
         const rule = new Rule(chess)
         chess.addEvent(rule)
         this.addLattice(chess.create())
-        Env.addChessList(chess)
+        operateList(true, 'ChessList', chess)
         this._index++
     }
 
 
 
     /** 添加 格子 */
-    addLattice(chess: HTMLElement = undefined): void {
+    private addLattice(chess: HTMLElement = undefined): void {
 
         // 获取 棋盘 内容
         const content: Element = document.getElementsByClassName('content')[0]
@@ -113,12 +106,7 @@ export default class Lattice {
         this._column++
     }
 
-    addEvent(lattice: HTMLDivElement): void {
-        lattice.onclick = () => {
-            // // 如果有棋子存在 且不是同色
-            // if (lattice.children[1] && (lattice.children[1].classList[1] === 'red') !== Env.Variable.Color) {
-            //     Env.Variable.Chess.moveChess(this._column, this._row)
-            // }
-        }
+    private addEvent(lattice: HTMLDivElement): void {
+        lattice.onclick = () => onclickLattice(lattice)
     }
 }

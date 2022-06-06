@@ -1,3 +1,4 @@
+
 /**
  * @file 象棋的棋子类文件
  * @author 夜明筱笙
@@ -6,7 +7,7 @@
 /** 导入接口 */
 import { ChessInfo } from "./interFace"
 import Rule from "./rule"
-import ENV from "./Env"
+import { toggleOnclickChess } from './utils';
 
 /** 象棋的棋子类 */
 export default class Chess {
@@ -43,11 +44,14 @@ export default class Chess {
     private _crossTheRiver: boolean
 
     /** 当前棋子可以到达的坐标 */
-    private _goalList: number[][] = []
+    private _goalList: [number, number][] = []
 
     /**
      * @param coordinate 棋子初始坐标
      * @param text 棋子文本
+     * @param color 棋子颜色 
+     * - true red
+     * - false black
      */
     constructor(coordinate: number[], text: string, color: boolean) {
         this._color = color
@@ -56,6 +60,9 @@ export default class Chess {
         this._text = text
     }
 
+    public getGoalList(): [number, number][] {
+        return this._goalList
+    }
 
     /** 
      * 用于创建 棋子 
@@ -98,69 +105,50 @@ export default class Chess {
     public addEvent(rule: Rule): void {
         // 绑定单击事件
         this._chess.onclick = () => {
-            // 如果当前没有棋子激活 或 现在是当前棋子颜色方行动
-            if (!ENV.Variable.active || ENV.Variable.ChessColor === ENV.Variable.color) {
-                // 删除所有棋子的 active
-                const chess = document.getElementsByClassName('chess active')[0]
-                if (chess) chess.className = `${chess.classList[0]} ${chess.classList[1]}`
-                this._chess.className += ' active'
-                // 删除点位
-
-                this._goalList = rule.method()
-
-            }
+            this._goalList = rule.method()
+            toggleOnclickChess(this, this._goalList)
         }
+    }
+
+    /** 切换棋子激活状态 */
+    public toggleActive(): void {
+        if (this._active) this._chess.classList.add('active')
+        else this._chess.classList.remove('active')
+    }
+
+    /** 删除并返回当前棋子 */
+    public removeChess(): HTMLElement {
+        this._chess.remove()
+        return this._chess
     }
 
     /**
-     * 移动棋子
-     * @param _toX 要到的格子的x轴
-     * @param _toY 要到的格子的y轴
+     * 修改坐标轴
+     * @param x x轴
+     * @param y y轴
      */
-    public moveChess(_toX: number, _toY: number): void {
-        /** 获取要到达的格子 */
-        const toLattice = document.getElementsByClassName(`lattice row-${_toY} column-${_toX}`)[0]
-        // 首先判断是否存在棋子
-        if (toLattice.children.length > 1) {
-            // 遍历棋子列表
-            for (const chess of ENV.Variable.ChessList) {
-                // 获取棋子x，y轴
-                const [x, y] = chess.getInfo().chess_coordinate
-                // 如果xy对应
-                if (x === _toX && y === _toY) {
-                    chess.eat()
-                }
-            }
-        }
-        // 否则是 不存在棋子 和 是异色棋子
-        this._chess.remove()
-        // 添加到到达格子
-        toLattice.append(this._chess)
-        // 变更当前棋子坐标
-        this._coordinate = [_toX, _toY]
+    public setCoordinate(x: number, y: number): void {
+        this._coordinate = [x, y]
     }
 
-    /** 棋子被吃 */
-    private eat(): void {
-        // 首先变更状态
+    /**
+     * 操作移动计数 返回操作的移动计数
+     * @param num 移动计数
+     * @param fn 操作方式
+     * - true push
+     * - false pop
+     */
+    public operateMoveCount(num: number, fn: boolean): number {
+        if (fn) this._moveCount.push(num)
+        else return this._moveCount.pop()
+        return num
+    }
+
+    /**
+     * 切换当前棋子的是否被吃状态 返回当前棋子是否被吃
+     */
+    public toggleEatStatus(): boolean {
         this._eat = !this._eat
-        // 如果被吃则添加当前棋子到被吃棋子中
-        if (this._eat) {
-            // 将当前棋子从棋子列表中移出
-            ENV.Variable.ChessList.splice(ENV.Variable.ChessList.indexOf(this))
-            // 添加到被吃棋子列表中
-            ENV.Variable.EatChessList.push([this, ENV.Variable.MoveCount])
-        }
-        // 否则没有取消被吃状态
-        else {
-            // 将当前棋子从被吃列表中移出
-            const info = ENV.Variable.EatChessList.splice(ENV.Variable.EatChessList.indexOf([this, ENV.Variable.MoveCount]))[0]
-            // 从移动列表中取出当前棋子被吃位置
-            const [x, y] = ENV.Variable.MoveList[info[1]]
-            // 重新将当前棋子添加到棋子列表
-            ENV.Variable.ChessList.push(this)
-            // 将当前棋子恢复到被吃位置
-            this.moveChess(x, y)
-        }
+        return this._eat
     }
 }

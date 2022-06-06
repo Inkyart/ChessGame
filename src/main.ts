@@ -10,10 +10,13 @@ import Init from "./script/Init";
 
 // 导入默认数据
 import data from './data/default.json'
-import ENV from "./script/Env";
+import { Variables } from "./script/Env";
+import { revokeMove } from "./script/utils";
 
 
 /** 先初始化 棋盘 */
 const init = new Init()
 const MainLattice = new Lattice(data)
-console.log(ENV.Variable)
+
+Variables.Reset = MainLattice.reset
+Variables.revokeMove = revokeMove
