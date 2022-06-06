@@ -5,7 +5,7 @@
 // 导入棋子
 import Chess from "./chess";
 // 导入接口
-import { LatticeInfo, FirstChess } from './interFace';
+import { LatticeInfo, existenceChess } from './interFace';
 // 导入点位数据
 import PointData from './data'
 
@@ -24,10 +24,10 @@ export default class Rule {
     private _crossTheRiver: boolean;
 
     /** 当前棋子可以到达的坐标 */
-    private _goalList: number[][];
+    private _goalList: [number, number][];
 
     /** 当前棋子规则处理方法 */
-    public _method: Function;
+    private _method: Function;
 
     /** x坐标 */
     private _x: number
@@ -36,11 +36,11 @@ export default class Rule {
     private _y: number
 
     /** 是否存在第一个棋子 炮 车用 */
-    private _firstChess: FirstChess = {
-        up: false,
-        down: false,
-        left: false,
-        right: false
+    private _existenceChess: existenceChess = {
+        up: [false, false],
+        down: [false, false],
+        left: [false, false],
+        right: [false, false]
     }
 
     /** 点位 */
@@ -50,13 +50,7 @@ export default class Rule {
     private _edge: number[][]
 
     /** 需要获取点位的棋子 */
-    private _needGetPoint: string[] = [
-        "兵", "卒",
-        "马", "馬",
-        "相", "象",
-        "士", "仕",
-        "将", "帅"
-    ]
+    private _needGetPoint: string[] = ["兵", "卒", "马", "馬", "相", "象", "士", "仕", "将", "帅"]
 
     /**
      * @param chess 需要判定的棋子本身
@@ -72,7 +66,7 @@ export default class Rule {
         this.rule();
     }
 
-    public method(): number[][] {
+    public method(): [number, number][] {
         // 重置坐标组
         this._goalList = [];
         // 更新棋子数据
@@ -118,12 +112,11 @@ export default class Rule {
         }
         /** 获取对应格子 */
         const lattice = document.getElementsByClassName(`lattice row-${row} column-${column}`)[0]
-        // 如果格子中存在棋子 因为有隐藏点位存在 所以 棋子是格子的第二个子元素
-        if (lattice?.childElementCount > 1) {
+        if (lattice?.childElementCount === 1) {
             result.existenceChess = true
 
             // 获取 第二个子元素
-            const chess = lattice.children[1]
+            const chess = lattice.children[0]
             result.color = chess.classList[1] === 'red'
             result.homochromatic = result.color === this._color
         }
@@ -133,32 +126,32 @@ export default class Rule {
     /**
      * 马和象共有函数
     */
-    private horseAndElephant() {
+    private horseAndElephant(): void {
         for (let i = 0; i < this._point.length; i++) {
             const
                 /** 结构赋值 */
                 [x, y, edgeX1, edgeY1] = [...this._point[i], ...this._edge[i]],
                 /** 马 象 都有一个边界格子判定棋子存在 */
-                _LatticeInfo = this.getLatticeChessInfo(y, x)
+                { homochromatic } = this.getLatticeChessInfo(y, x)
             // 如果边界格子都存在棋子则跳过当前循环
             if (this.getLatticeChessInfo(edgeY1, edgeX1).existenceChess) continue
-            if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !_LatticeInfo.homochromatic) this._goalList.push([x, y])
+            if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !homochromatic) this._goalList.push([x, y])
         }
     }
 
     /**
      * 通用函数
      */
-    private currency() {
+    private currency(): void {
         for (const [x, y] of this._point) {
-            const LatticeInfo = this.getLatticeChessInfo(y, x)
+            const { homochromatic } = this.getLatticeChessInfo(y, x)
             // 如果没有特别边界值限制
             if (!this._edge) {
-                if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !LatticeInfo.homochromatic) this._goalList.push([x, y])
+                if (y <= 10 && y >= 1 && x <= 9 && x >= 1 && !homochromatic) this._goalList.push([x, y])
             }
             // 否则有
             else {
-                if (this._edge[0].includes(x) && this._edge[1].includes(y) && !LatticeInfo.homochromatic) this._goalList.push([x, y])
+                if (this._edge[0].includes(x) && this._edge[1].includes(y) && !homochromatic) this._goalList.push([x, y])
             }
         }
     }
@@ -166,14 +159,17 @@ export default class Rule {
     /**
      * 炮和车共有函数
      */
-    private gunAndCar() {
-        this._firstChess.up = this._firstChess.down = this._firstChess.left = this._firstChess.right = false
+    private gunAndCar(): void {
+        this._existenceChess.up = [false, false]
+        this._existenceChess.down = [false, false]
+        this._existenceChess.left = [false, false]
+        this._existenceChess.right = [false, false]
         for (let i = 1; i < 9; i++) {
             // 四条直线
-            if (this._y - i >= 1) this.gunAndCarUtil(this._x, this._y - i, "up")
+            if (this._y - i >= 1 ) this.gunAndCarUtil(this._x, this._y - i, "up")
             if (this._y + i <= 10) this.gunAndCarUtil(this._x, this._y + i, "down")
-            if (this._x - i >= 1) this.gunAndCarUtil(this._x - i, this._y, "left")
-            if (this._x + i <= 9) this.gunAndCarUtil(this._x + i, this._y, "right")
+            if (this._x - i >= 1 ) this.gunAndCarUtil(this._x - i, this._y, "left")
+            if (this._x + i <= 9 ) this.gunAndCarUtil(this._x + i, this._y, "right")
         }
     }
 
@@ -181,32 +177,30 @@ export default class Rule {
     * 棋子 车，炮的工具方法
     * @param x 格子x轴
     * @param y 格子y轴
-    * @param firstChess 第一个棋子是否存在
+    * @param fields 棋子存在方向字段
     */
-    private gunAndCarUtil(x: number, y: number, firstChess: string) {
+    private gunAndCarUtil(x: number, y: number, fields: string): void {
         // 判断类型 如果不是 车 就是炮
-        const type = ['车', '車'].includes(this._text)
+        const type = ['车', '車'].includes(this._text),
+            [firstChess, secondChess] = this._existenceChess[fields]
         // 如果是车 第一个棋子存在
-        if (type) if (this._firstChess[firstChess]) return
+        if (type && firstChess) return
         /** 获取对应格子信息 */
-        const LatticeInfo: LatticeInfo = this.getLatticeChessInfo(y, x)
+        const { homochromatic, existenceChess } = this.getLatticeChessInfo(y, x)
         // 不存在棋子
-        if (!this._firstChess[firstChess] && !LatticeInfo.existenceChess) {
-            this._goalList.push([x, y])
-            this._firstChess[firstChess] = false
-        }
+        if (!firstChess && !existenceChess) this._goalList.push([x, y])
         // 存在棋子
         else {
-            // 存在一个棋子 且 第一个棋子不存在
-            if (LatticeInfo.existenceChess && !this._firstChess[firstChess]) {
-                // 如果是车 且 是异色棋子
-                if (type && !LatticeInfo.homochromatic) this._goalList.push([x, y])
-            }
-            // 类型是炮 存在棋子 第一个棋子存在 且 是异色棋子
-            if (!type && LatticeInfo.existenceChess && this._firstChess[firstChess] && !LatticeInfo.homochromatic) {
+            // 类型是车 存在一个棋子 第一个棋子不存在 且 是异色棋子
+            if (type && existenceChess && !firstChess && !homochromatic) {
                 this._goalList.push([x, y])
             }
-            this._firstChess[firstChess] = true
+            // 类型是炮 存在棋子 第一个棋子存在 第二个棋子不存在 且 是异色棋子
+            if (!type && existenceChess && firstChess && !secondChess && !homochromatic) {
+                this._existenceChess[fields][1] = true
+                this._goalList.push([x, y])
+            }
+            this._existenceChess[fields][0] = true
         }
     }
 }
