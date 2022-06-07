@@ -11,7 +11,12 @@ import Init from "./script/Init";
 // 导入默认数据
 import data from './data/default.json'
 import Variables from "./script/Env";
-import { revokeMove, resetChessBoard, resetEnv, reverseChessboard } from "./script/utils";
+import ChessboardUtils from "./utils/ChessboardUtils";
+import VariableUtils from "./utils/VariablesUtils";
+import ChessUtils from "./utils/ChessUtils";
+const { resetEnv } = VariableUtils
+const { revokeMove } = ChessUtils
+const { resetChessBoard, reverseChessboard } = ChessboardUtils
 
 reverseChessboard()
 
@@ -19,12 +24,7 @@ reverseChessboard()
 const init = new Init()
 const MainLattice = new Lattice(data)
 
-Variables.Reset = MainLattice.reset
-Variables.revokeMove = revokeMove
-document.getElementById('btn-revoke').onclick = () => {
-    console.log('撤销')
-    revokeMove()
-}
+document.getElementById('btn-revoke').onclick = () => {revokeMove()}
 document.getElementById('btn-reset').onclick = () => {
     const _data = resetEnv()
     console.log('上局数据', _data)

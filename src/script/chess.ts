@@ -7,7 +7,8 @@
 /** 导入接口 */
 import { ChessInfo } from "./interFace"
 import Rule from "./rule"
-import { toggleOnclickChess } from './utils';
+import ChessUtils from "../utils/ChessUtils"
+const { toggleOnclickChess } = ChessUtils
 
 /** 象棋的棋子类 */
 export default class Chess {

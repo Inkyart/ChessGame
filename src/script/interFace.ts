@@ -30,7 +30,7 @@ export interface Variable extends StringIndex<any> {
     /** 被吃棋子列表 [被吃棋子，被吃时的移动次数]*/
     EatChessList: Array<[Chess, number]>
     /** 移动坐标列表 */
-    MoveList: number[][]
+    MoveList: [number,number][]
 }
 /** 全局变量修改结果返回值 */
 export interface SetVariables<T> {

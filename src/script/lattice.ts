@@ -9,7 +9,9 @@ import Chess from "./chess"
 /** 导入棋子初始化信息 */
 import { InitInfo } from "./interFace"
 import Rule from "./rule"
-import { onclickLattice, operateList } from "./utils"
+import VariableUtils from "../utils/VariablesUtils"
+import LatticeUtils from "../utils/LatticeUtils"
+const { onclickLattice } = LatticeUtils, { operateChessList } = VariableUtils
 
 
 /**
@@ -84,7 +86,7 @@ export default class Lattice {
         const rule = new Rule(chess)
         chess.addEvent(rule)
         this.addLattice(chess.create())
-        operateList(true, 'ChessList', chess)
+        operateChessList(true, chess)
         this._index++
     }
 
