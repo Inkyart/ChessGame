@@ -51,23 +51,34 @@ export const revokeMove = (): void => {
     if (Variables.MoveCount) {
         // 首先遍历棋子列表
         for (const chess of Variables.ChessList) {
-            // 然后取出棋子坐标
-            const { chess_coordinate, chess_moveCount } = chess.getInfo()
-            const [x, y] = chess_coordinate
-            // 对比移动坐标列表中下标为移动计数的坐标
-            const [lastX, lastY] = Variables.MoveList[Variables.MoveCount - 1]
-            // 如果坐标相同 且 移动计数相同
-            if (x === lastX && y === lastY && chess_moveCount.pop() === Variables.MoveCount - 1) {
+            // 获取遍历所得棋子最后移动计数和最后坐标（非当前坐标）
+            const { chess_moveCount, chess_coordinateList } = chess.getInfo()
+            const lastMove = chess_moveCount[chess_moveCount.length - 1]
+            // 对比全局变量移动计数（移动计数-1）
+            if (lastMove === Variables.MoveCount - 1) {
+                const [x, y] = chess_coordinateList[chess_coordinateList.length - 2]
+                // 将两方当前棋子都变更为当前棋子
+                Variables.BlackOnclickChess = chess
+                Variables.RedOnclickChess = chess
                 moveChess(x, y, false)
+                // 如果被吃棋子列表中存在棋子
+                if (Variables.EatChessList.length) {
+                    // 获取最后被吃棋子信息
+                    const lastEatChessInfo = Variables.EatChessList[Variables.EatChessList.length - 1]
+                    // 获取最后被吃棋子
+                    const lastEatChess = lastEatChessInfo[0]
+                    // 获取最后被吃棋子被吃坐标
+                    const [lastEatX, lastEatY] = lastEatChess.getInfo().chess_coordinate
+                    console.log(chess)
+                    // 对比被吃棋子被吃坐标和棋子当前坐标
+                    // if (lastEatX === _x && lastEatY === _y) {
+                    //     // 先计数加一，因为前面已经进行过一次移动棋子了
+                    //     setMoveCount(true)
+                    //     cancelEat()
+                    // }
+                }
                 break
             }
-        }
-        // 如果被吃棋子列表存在棋子
-        if (Variables.EatChessList.length) {
-            // 获取最后被吃掉棋子
-            const [, eatCount] = Variables.EatChessList[Variables.EatChessList.length - 1]
-            // 如果最后吃掉的棋子时的移动计数和当前移动计数一致
-            if (eatCount === Variables.MoveCount) cancelEat()
         }
     }
 }
@@ -133,9 +144,9 @@ export const activeLattice = (_goalList: [number, number][]): void => {
  * - true 正常移动
  * - false 撤销移动
  */
-export const moveChess = (_toX: number, _toY: number, fn: boolean): void => {
-    // 首先判断颜色
-    if (!(Variables.Color === Variables.ChessColor)) return
+export const moveChess = (_toX: number, _toY: number, fn: boolean = true): void => {
+    // 首先判断颜色 如果是撤销则不需要判断
+    if (!(Variables.Color === Variables.ChessColor) && fn) return
     /** 获取要到达的格子 */
     const toLattice = document.getElementsByClassName(`lattice row-${_toY} column-${_toX}`)[0]
     /** 获取棋子 */
@@ -155,12 +166,12 @@ export const moveChess = (_toX: number, _toY: number, fn: boolean): void => {
     // 添加到到达格子
     toLattice.append(chess.removeChess())
     // 变更当前棋子坐标
-    chess.setCoordinate(_toX, _toY)
+    chess.setCoordinate(_toX, _toY, fn)
     // 操作当前棋子移动计数
     chess.operateMoveCount(Variables.MoveCount, fn)
     // 修改计数
     setMoveCount(fn)
-    // 添加计数对应的坐标
+    // 操作计数对应的坐标
     operateList(fn, 'MoveList', [_toX, _toY])
     // 取消激活棋子
     Variables.Active = false
@@ -173,6 +184,7 @@ export const moveChess = (_toX: number, _toY: number, fn: boolean): void => {
     Variables.BlackOnclickChess = null
     // 清空激活格子
     activeLattice([])
+    reverseChessboard()
 
 }
 
@@ -200,8 +212,8 @@ export const eat = (Chess: Chess): void => {
 export const cancelEat = (): void => {
     // 如果不存在被吃棋子
     if (!Variables.EatChessList.length) return
-    // 将当前棋子从被吃列表中移出
-    const info = Variables.EatChessList.splice(Variables.EatChessList.indexOf([this, Variables.MoveCount]))[0]
+    // 将最后被吃棋子从被吃列表中移出
+    const info = Variables.EatChessList.pop()
     // 从移动列表中取出当前棋子被吃位置
     const [x, y] = Variables.MoveList[info[1]]
     // 重新将当前棋子添加到棋子列表
@@ -236,4 +248,11 @@ export const onclickLattice = (lattice: HTMLDivElement): void => {
     const [, y, x] = lattice.className.match(/row-(.{1,2}) column-(.{1})/)
     // 当前有棋子被激活 且 当前格子被激活 移动棋子
     if (Variables.Active && lattice.classList.contains('lattice-active')) moveChess(parseInt(x), parseInt(y), true)
+}
+
+/** 反转棋盘 */
+export const reverseChessboard = (): void => {
+    const chessboard = document.getElementsByClassName('chessboard')[0]
+    chessboard.classList.toggle('reverse-red', Variables.Color)
+    chessboard.classList.toggle('reverse-black', !Variables.Color)
 }

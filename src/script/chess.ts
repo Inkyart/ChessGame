@@ -55,7 +55,7 @@ export default class Chess {
      */
     constructor(coordinate: [number, number], text: string, color: boolean) {
         this._color = color
-        this._coordinate = coordinate
+        this.setCoordinate(coordinate[0], coordinate[1], true)
         this._text = text
     }
 
@@ -119,7 +119,6 @@ export default class Chess {
     /** 删除并返回当前棋子 */
     public removeChess(): HTMLElement {
         this._chess.remove()
-        this._coordinateList.push(this._coordinate)
         return this._chess
     }
 
@@ -127,9 +126,14 @@ export default class Chess {
      * 修改坐标轴
      * @param x x轴
      * @param y y轴
+     * @param fn 设置方法
+     * - true 添加
+     * - false 删除
      */
-    public setCoordinate(x: number, y: number): void {
+    public setCoordinate(x: number, y: number, fn: boolean): void {
         this._coordinate = [x, y]
+        if (fn) this._coordinateList.push(this._coordinate)
+        else this._coordinateList.pop()
     }
 
     /**

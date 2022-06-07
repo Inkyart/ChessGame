@@ -11,8 +11,9 @@ import Init from "./script/Init";
 // 导入默认数据
 import data from './data/default.json'
 import Variables from "./script/Env";
-import { revokeMove, resetChessBoard, resetEnv } from "./script/utils";
+import { revokeMove, resetChessBoard, resetEnv, reverseChessboard } from "./script/utils";
 
+reverseChessboard()
 
 /** 先初始化 棋盘 */
 const init = new Init()
@@ -34,6 +35,7 @@ document.getElementById('getInfo').onclick = () => {
     const info = getVariableInfo()
     for(const item of info) console.log(item)
 }
+
 
 /** 获取全局变量并输出信息 */
 const getVariableInfo = (): any => {
