@@ -57,6 +57,7 @@ export const revokeMove = (): void => {
             // 对比全局变量移动计数（移动计数-1）
             if (lastMove === Variables.MoveCount - 1) {
                 const [x, y] = chess_coordinateList[chess_coordinateList.length - 2]
+                const [_x, _y] = chess_coordinateList[chess_coordinateList.length - 1]
                 // 将两方当前棋子都变更为当前棋子
                 Variables.BlackOnclickChess = chess
                 Variables.RedOnclickChess = chess
@@ -69,13 +70,14 @@ export const revokeMove = (): void => {
                     const lastEatChess = lastEatChessInfo[0]
                     // 获取最后被吃棋子被吃坐标
                     const [lastEatX, lastEatY] = lastEatChess.getInfo().chess_coordinate
-                    console.log(chess)
                     // 对比被吃棋子被吃坐标和棋子当前坐标
-                    // if (lastEatX === _x && lastEatY === _y) {
-                    //     // 先计数加一，因为前面已经进行过一次移动棋子了
-                    //     setMoveCount(true)
-                    //     cancelEat()
-                    // }
+                    if (lastEatX === _x && lastEatY === _y) {
+                        // 这个坐标涉及两个棋子 移动上个棋子时删除了坐标和减少了移动计数
+                        operateList(true, 'MoveList', [_x, _y])
+                        // 计数加一
+                        setMoveCount(true)
+                        cancelEat()
+                    }
                 }
                 break
             }
@@ -184,7 +186,7 @@ export const moveChess = (_toX: number, _toY: number, fn: boolean = true): void 
     Variables.BlackOnclickChess = null
     // 清空激活格子
     activeLattice([])
-    reverseChessboard()
+    // reverseChessboard()
 
 }
 
@@ -215,7 +217,9 @@ export const cancelEat = (): void => {
     // 将最后被吃棋子从被吃列表中移出
     const info = Variables.EatChessList.pop()
     // 从移动列表中取出当前棋子被吃位置
-    const [x, y] = Variables.MoveList[info[1]]
+    const [x, y] = Variables.MoveList.pop()
+    Variables.BlackOnclickChess = info[0]
+    Variables.RedOnclickChess = info[0]
     // 重新将当前棋子添加到棋子列表
     Variables.ChessList.push(info[0])
     // 将当前棋子恢复到被吃位置
