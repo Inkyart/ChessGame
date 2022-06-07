@@ -5,9 +5,10 @@
 import { Variable } from "./interFace";
 
 /** 全局变量 */
-export const Variables: Variable = {
-    OnclickChess: null,
-    OldOnclickChess: null,
+const Variables: Variable = {
+    RedOnclickChess: null,
+    BlackOnclickChess: null,
+    LastOnclickChess: null,
     ChessColor: null,
     ChessList: [],
     MoveCount: 0,
@@ -15,6 +16,5 @@ export const Variables: Variable = {
     Color: true,
     EatChessList: [],
     MoveList: [],
-    Reset: null,
-    revokeMove: null
 }
+export default Variables

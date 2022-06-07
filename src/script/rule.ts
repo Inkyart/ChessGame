@@ -164,7 +164,7 @@ export default class Rule {
         this._existenceChess.down = [false, false]
         this._existenceChess.left = [false, false]
         this._existenceChess.right = [false, false]
-        for (let i = 1; i < 9; i++) {
+        for (let i = 1; i < 10; i++) {
             // 四条直线
             if (this._y - i >= 1 ) this.gunAndCarUtil(this._x, this._y - i, "up")
             if (this._y + i <= 10) this.gunAndCarUtil(this._x, this._y + i, "down")

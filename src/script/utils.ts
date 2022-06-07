@@ -1,9 +1,8 @@
-import { chessRule } from './interFace';
 /**
  * @file 工具函数文件
  */
 
-import { Variables } from "./Env"
+import Variables from "./Env"
 import { SetVariables, Variable } from "./interFace"
 import Chess from "./chess"
 
@@ -30,47 +29,45 @@ export const setMoveCount = (Fn: boolean): SetVariables<number> => {
  * - true 添加
  * - false 删除
  * @param list 需要进行操作的列表字段
- * @param chess 需要添加的棋子
+ * @param data 需要添加的棋子
  */
-export const operateList = (fn: boolean, list: string, chess?: Chess): Chess => {
-    if (fn) Variables[list].push(chess)
+export const operateList = (fn: boolean, list: string, data?: Chess | [number, number]): Chess | [number, number] => {
+    if (fn) Variables[list].push(data)
     else return Variables[list].pop()
-    return chess
+    return data
 }
-
-/** 删除所有棋子 */
-export const removeChess = (): void => {
+/** 重置棋盘 */
+export const resetChessBoard = (): void => {
     /** chess 用于获取所有棋子 */
-    const chess: HTMLCollectionOf<Element> = document.getElementsByClassName('.chess')
-    /** 
-     * 遍历获取的棋子数组
-     * 然后调用父节点的删除子元素方法
-     * 删除对应的棋子元素
-     */
-    for (let item = 0; item < chess.length; item++) chess[item].parentNode.removeChild(chess[item])
+    const chess = document.getElementsByClassName('chess')
+    const lattice = document.getElementsByClassName('lattice')
+    for (let i = chess.length - 1; i >= 0; i--) chess[i].remove()
+    for (let i = lattice.length - 1; i >= 0; i--) lattice[i].remove()
 }
 
 /** 撤销棋子 */
-export const revokeMove = () => {
-    // 获取最后被吃掉棋子
-    const [chess, eatCount] = Variables.EatChessList[Variables.EatChessList.length - 1]
-    // 如果最后吃掉的棋子时的移动计数和当前移动计数一致
-    if (eatCount === Variables.MoveCount) eat(chess)
-    // 否则遍历棋子列表
-    else {
+export const revokeMove = (): void => {
+    // 如果存在移动次数
+    if (Variables.MoveCount) {
+        // 首先遍历棋子列表
         for (const chess of Variables.ChessList) {
-            // 获取当前遍历棋子的最后移动计数
-            const moveCount = chess.getInfo().chess_moveCount
-            // 如果当前遍历的棋子的最后移动计数等于当前移动计数
-            if (moveCount[moveCount.length - 1] === Variables.MoveCount) {
-                // 则将当前棋子移动到上个位置
-                const [x, y] = Variables.MoveList.pop()
-
+            // 然后取出棋子坐标
+            const { chess_coordinate, chess_moveCount } = chess.getInfo()
+            const [x, y] = chess_coordinate
+            // 对比移动坐标列表中下标为移动计数的坐标
+            const [lastX, lastY] = Variables.MoveList[Variables.MoveCount - 1]
+            // 如果坐标相同 且 移动计数相同
+            if (x === lastX && y === lastY && chess_moveCount.pop() === Variables.MoveCount - 1) {
                 moveChess(x, y, false)
-
-                setMoveCount(false)
                 break
             }
+        }
+        // 如果被吃棋子列表存在棋子
+        if (Variables.EatChessList.length) {
+            // 获取最后被吃掉棋子
+            const [, eatCount] = Variables.EatChessList[Variables.EatChessList.length - 1]
+            // 如果最后吃掉的棋子时的移动计数和当前移动计数一致
+            if (eatCount === Variables.MoveCount) cancelEat()
         }
     }
 }
@@ -79,8 +76,8 @@ export const revokeMove = () => {
 export const resetEnv = (): Variable => {
     /** 旧变量值 */
     const oldValue = {
-        OnclickChess: Variables.Chess,
-        OldOnclickChess: Variables.OldOnclickChess,
+        RedOnclickChess: Variables.RedOnclickChess,
+        BlackOnclickChess: Variables.BlackOnclickChess,
         ChessColor: Variables.ChessColor,
         ChessList: Variables.ChessList,
         MoveCount: Variables.MoveCount,
@@ -89,10 +86,11 @@ export const resetEnv = (): Variable => {
         EatChessList: Variables.EatChessList,
         MoveList: Variables.MoveList,
         Reset: Variables.Reset,
-        revokeMove: Variables.revokeMove
+        revokeMove: Variables.revokeMove,
+        LastOnclickChess: Variables.LastOnclickChess
     }
-    Variables.OnclickChess = null
-    Variables.OldOnclickChess = null
+    Variables.RedOnclickChess = null
+    Variables.BlackOnclickChess = null
     Variables.ChessColor = null
     Variables.ChessList = []
     Variables.MoveCount = 0
@@ -136,11 +134,14 @@ export const activeLattice = (_goalList: [number, number][]): void => {
  * - false 撤销移动
  */
 export const moveChess = (_toX: number, _toY: number, fn: boolean): void => {
+    // 首先判断颜色
+    if (!(Variables.Color === Variables.ChessColor)) return
     /** 获取要到达的格子 */
     const toLattice = document.getElementsByClassName(`lattice row-${_toY} column-${_toX}`)[0]
-    /** 获取棋子 旧点击棋子优先 */
-    const chess = (Variables.OldOnclickChess || Variables.OnclickChess)
-    const [y, x] = chess.getInfo().chess_coordinate
+    /** 获取棋子 */
+    const chess = Variables.Color ? Variables.RedOnclickChess : Variables.BlackOnclickChess
+    const info = chess.getInfo()
+    const [x, y] = info.chess_coordinate
     // 首先判断是否存在棋子 且 不是当前格子
     if (toLattice.children.length && `${x},${y}` !== `${_toX},${_toY}`) {
         // 遍历棋子列表
@@ -148,24 +149,28 @@ export const moveChess = (_toX: number, _toY: number, fn: boolean): void => {
             // 获取棋子x，y轴
             const [x, y] = EatChess.getInfo().chess_coordinate
             // 如果xy对应
-            if (x === _toX && y === _toY) {
-                console.log(EatChess)
-                eat(EatChess)
-            }
+            if (x === _toX && y === _toY) eat(EatChess)
         }
     }
     // 添加到到达格子
     toLattice.append(chess.removeChess())
     // 变更当前棋子坐标
     chess.setCoordinate(_toX, _toY)
-    
     // 操作当前棋子移动计数
     chess.operateMoveCount(Variables.MoveCount, fn)
+    // 修改计数
+    setMoveCount(fn)
+    // 添加计数对应的坐标
+    operateList(fn, 'MoveList', [_toX, _toY])
     // 取消激活棋子
     Variables.Active = false
+    // 变更最近点击棋子
+    Variables.LastOnclickChess = chess
+    // 变更颜色方
+    Variables.Color = !Variables.Color
     // 重置点击棋子
-    Variables.OldOnclickChess = null
-    Variables.OnclickChess = null
+    Variables.RedOnclickChess = null
+    Variables.BlackOnclickChess = null
     // 清空激活格子
     activeLattice([])
 
@@ -187,17 +192,22 @@ export const eat = (Chess: Chess): void => {
         Variables.EatChessList.push([Chess, Variables.MoveCount])
         Chess.removeChess()
     }
-    // 否则没有取消被吃状态
-    else {
-        // 将当前棋子从被吃列表中移出
-        const info = Variables.EatChessList.splice(Variables.EatChessList.indexOf([this, Variables.MoveCount]))[0]
-        // 从移动列表中取出当前棋子被吃位置
-        const [x, y] = Variables.MoveList[info[1]]
-        // 重新将当前棋子添加到棋子列表
-        Variables.ChessList.push(Chess)
-        // 将当前棋子恢复到被吃位置
-        moveChess(x, y, false)
-    }
+}
+
+/**
+ * 取消棋子被吃
+ */
+export const cancelEat = (): void => {
+    // 如果不存在被吃棋子
+    if (!Variables.EatChessList.length) return
+    // 将当前棋子从被吃列表中移出
+    const info = Variables.EatChessList.splice(Variables.EatChessList.indexOf([this, Variables.MoveCount]))[0]
+    // 从移动列表中取出当前棋子被吃位置
+    const [x, y] = Variables.MoveList[info[1]]
+    // 重新将当前棋子添加到棋子列表
+    Variables.ChessList.push(info[0])
+    // 将当前棋子恢复到被吃位置
+    moveChess(x, y, false)
 }
 
 /**
@@ -205,20 +215,16 @@ export const eat = (Chess: Chess): void => {
  * @param Chess 当前点击的棋子
  * @param GoalList 当前点击棋子的可到达格子坐标列表
  */
-export const toggleOnclickChess = (Chess: Chess, GoalList: [number, number][]): Chess | null => {
-    const oldOnclickChess = Variables.OldOnclickChess
-    // 如果存在一个被点击的棋子
-    if (Variables.OnclickChess) {
-        const { chess_color } = Variables.OnclickChess.getInfo()
-        // 如果两次点击棋子不同色
-        if (chess_color !== Chess.getInfo().chess_color) Variables.OldOnclickChess = Variables.OnclickChess
-    }
-    Variables.OnclickChess = Chess
+export const toggleOnclickChess = (Chess: Chess, GoalList: [number, number][]): void => {
+    // 判断是哪一方
+    if (Variables.Color) Variables.RedOnclickChess = Chess
+    else Variables.BlackOnclickChess = Chess
+
+    Variables.ChessColor = Chess.getInfo().chess_color
     // 有棋子激活
     Variables.Active = true
-    // 激活格子
-    activeLattice(GoalList)
-    return oldOnclickChess
+    // 如果当前点击棋子颜色和当前行动方相同 激活格子
+    if (Variables.ChessColor === Variables.Color) activeLattice(GoalList)
 }
 
 /**

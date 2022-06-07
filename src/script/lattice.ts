@@ -9,7 +9,7 @@ import Chess from "./chess"
 /** 导入棋子初始化信息 */
 import { InitInfo } from "./interFace"
 import Rule from "./rule"
-import { onclickLattice, operateList, removeChess } from "./utils"
+import { onclickLattice, operateList } from "./utils"
 
 
 /**
@@ -40,9 +40,12 @@ export default class Lattice {
      * 重置棋盘
      * @param infoList 棋子数据列表
      */
-    public reset(infoList: Array<InitInfo>): void {
-        this._infoList = infoList
-        removeChess()
+    public reset(infoList: Array<InitInfo> | null): void {
+        this._infoList = infoList ?? this._infoList
+        this._index = 0
+        this._order = 0
+        this._row = 1
+        this._column = 1
         this.draw()
     }
 

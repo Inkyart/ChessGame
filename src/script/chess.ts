@@ -17,7 +17,7 @@ export default class Chess {
      * - 0 为 x 坐标
      * - 1 为 y 坐标
      */
-    private _coordinate: number[]
+    private _coordinate: [number, number]
 
     /** 棋子文本 */
     private _text: string
@@ -29,7 +29,7 @@ export default class Chess {
     private _moveCount: number[] = []
 
     /** 坐标列表,用于撤销 */
-    private _coordinateList: number[][] = []
+    private _coordinateList: [number, number][] = []
 
     /** 棋子颜色*/
     private _color: boolean
@@ -53,10 +53,9 @@ export default class Chess {
      * - true red
      * - false black
      */
-    constructor(coordinate: number[], text: string, color: boolean) {
+    constructor(coordinate: [number, number], text: string, color: boolean) {
         this._color = color
         this._coordinate = coordinate
-        this._coordinateList.push(this._coordinate)
         this._text = text
     }
 
@@ -92,6 +91,7 @@ export default class Chess {
             chess_eat: this._eat,
             chess_text: this._text,
             chess_coordinate: this._coordinate,
+            chess_coordinateList: this._coordinateList,
             chess_crossTheRiver: this._crossTheRiver,
             chess_moveCount: this._moveCount
         }
@@ -119,6 +119,7 @@ export default class Chess {
     /** 删除并返回当前棋子 */
     public removeChess(): HTMLElement {
         this._chess.remove()
+        this._coordinateList.push(this._coordinate)
         return this._chess
     }
 

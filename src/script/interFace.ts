@@ -7,10 +7,12 @@ import Chess from "./chess"
 
 /** 全局变量 */
 export interface Variable extends StringIndex<any> {
-    /** 当前单击棋子 */
-    OnclickChess: Chess | null
-    /** 原先单击棋子 */
-    OldOnclickChess: Chess | null
+    /** 红方单击棋子 */
+    RedOnclickChess: Chess | null
+    /** 黑方单击棋子 */
+    BlackOnclickChess: Chess | null
+    /** 上个单击棋子 */
+    LastOnclickChess: Chess | null
     /** 当前单击棋子颜色 */
     ChessColor: boolean | null
     /** 棋子列表 */
@@ -29,10 +31,6 @@ export interface Variable extends StringIndex<any> {
     EatChessList: Array<[Chess, number]>
     /** 移动坐标列表 */
     MoveList: number[][]
-    /** 重置方法 */
-    Reset: Function
-    /** 撤销方法 */
-    revokeMove: Function
 }
 /** 全局变量修改结果返回值 */
 export interface SetVariables<T> {
@@ -62,6 +60,8 @@ export interface ChessInfo {
     chess_color: boolean
     /** 棋子坐标 */
     chess_coordinate: number[]
+    /** 棋子坐标组 */
+    chess_coordinateList: [number, number][]
     /** 棋子是否过河 */
     chess_crossTheRiver: boolean
     /** 棋子移动计数列表 */

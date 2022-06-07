@@ -10,8 +10,8 @@ import Init from "./script/Init";
 
 // 导入默认数据
 import data from './data/default.json'
-import { Variables } from "./script/Env";
-import { revokeMove } from "./script/utils";
+import Variables from "./script/Env";
+import { revokeMove, resetChessBoard, resetEnv } from "./script/utils";
 
 
 /** 先初始化 棋盘 */
@@ -20,3 +20,46 @@ const MainLattice = new Lattice(data)
 
 Variables.Reset = MainLattice.reset
 Variables.revokeMove = revokeMove
+document.getElementById('btn-revoke').onclick = () => {
+    console.log('撤销')
+    revokeMove()
+}
+document.getElementById('btn-reset').onclick = () => {
+    const _data = resetEnv()
+    console.log('上局数据', _data)
+    resetChessBoard()
+    MainLattice.reset(data)
+}
+document.getElementById('getInfo').onclick = () => {
+    const info = getVariableInfo()
+    for(const item of info) console.log(item)
+}
+
+/** 获取全局变量并输出信息 */
+const getVariableInfo = (): any => {
+    const {
+        RedOnclickChess,
+        BlackOnclickChess,
+        LastOnclickChess,
+        ChessColor,
+        ChessList,
+        MoveCount,
+        Active,
+        Color,
+        EatChessList,
+        MoveList
+    } = Variables
+    const data = [
+        {'红方点击棋子': RedOnclickChess},
+        {'黑方点击棋子': BlackOnclickChess},
+        {'上个点击棋子': LastOnclickChess},
+        {'棋子列表': ChessList},
+        {'移动坐标列表': MoveList},
+        {'被吃棋子列表': EatChessList},
+        `当前棋子方: ${Color ? '红方' : '黑方'}`,
+        `当前点击棋子颜色: ${ChessColor ? '红' : '黑'}`,
+        `移动计数: 共移动${MoveCount}次`,
+        `当前是否有棋子激活: ${Active ? '是' : '否'}`
+    ]
+    return data
+}
