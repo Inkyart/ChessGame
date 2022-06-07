@@ -27,7 +27,24 @@ body {
   display: flex;
   flex-flow: nowrap row;
   justify-content: center;
-  align-items: center; }
+  align-items: center;
+  transition: 2s;
+  /** 反转 红方
+  ------------------------------------------------------------*/
+  /** 反转 黑方
+  ------------------------------------------------------------*/ }
+  .chessboard.reverse-red {
+    animation: reverseChessboard-red ease-in-out 2s 1;
+    animation-fill-mode: forwards; }
+    .chessboard.reverse-red .chess {
+      animation: reverseChessboard-red ease-in-out 2s 1;
+      animation-fill-mode: forwards; }
+  .chessboard.reverse-black {
+    animation: reverseChessboard-black ease-in-out 2s 1;
+    animation-fill-mode: forwards; }
+    .chessboard.reverse-black .chess {
+      animation: reverseChessboard-black ease-in-out 2s 1;
+      animation-fill-mode: forwards; }
 
 /** 画布
 ------------------------------------------------------------*/
@@ -141,6 +158,24 @@ canvas {
   border-radius: 15px;
   background-color: #f8d6a9;
   font-weight: 800;
-  box-shadow: 1px 1px .1em 1px black, inset 1px 1px .1em 1px white; }
+  box-shadow: 1px 1px .1em 1px black, inset 1px 1px .1em 1px white;
+  cursor: pointer; }
+  .btn:hover {
+    background-color: #fae1c1; }
+
+/** 反转棋盘动画 红方
+------------------------------------------------------------*/
+@keyframes reverseChessboard-red {
+  0% {
+    transform: rotateZ(0deg); }
+  100% {
+    transform: rotateZ(180deg); } }
+/** 反转棋盘动画 黑方
+------------------------------------------------------------*/
+@keyframes reverseChessboard-black {
+  0% {
+    transform: rotateZ(180deg); }
+  100% {
+    transform: rotateZ(360deg); } }
 
 /*# sourceMappingURL=index.css.map */
