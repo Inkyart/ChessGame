@@ -153,12 +153,15 @@ namespace ChessUtils {
 
             // 将最后被吃棋子从被吃列表中移出
             const info = Variables.EatChessList.pop()
+            const [chess, ] = info
             // 从移动列表中取出当前棋子被吃位置
             const [_x, _y] = Variables.MoveList.pop()
-            Variables.BlackOnclickChess = info[0]
-            Variables.RedOnclickChess = info[0]
+            Variables.BlackOnclickChess = chess
+            Variables.RedOnclickChess = chess
             // 重新将当前棋子添加到棋子列表
-            Variables.ChessList.push(info[0])
+            Variables.ChessList.push(chess)
+            chess.setCoordinate(_x, _y, true)
+            chess.toggleEatStatus()
             // 将当前棋子恢复到被吃位置
             moveChess(_x, _y, false)
         }

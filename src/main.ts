@@ -33,6 +33,7 @@ document.getElementById('btn-reset').onclick = () => {
 }
 document.getElementById('getInfo').onclick = () => {
     const info = getVariableInfo()
+    console.clear()
     for(const item of info) console.log(item)
 }
 
