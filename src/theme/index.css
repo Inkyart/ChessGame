@@ -130,7 +130,7 @@ canvas {
     top: 20%;
     background-color: rgba(255, 255, 255, 0.09);
     border-radius: 15px;
-    box-shadow: 0 0 .1em 1px skyblue; }
+    box-shadow: 0 0 1px 1px white; }
 
 /** 显示点位
 ------------------------------------------------------------*/
@@ -167,15 +167,15 @@ canvas {
 ------------------------------------------------------------*/
 @keyframes reverseChessboard-red {
   0% {
-    transform: rotateZ(0deg); }
+    transform: rotateZ(180deg); }
   100% {
-    transform: rotateZ(180deg); } }
+    transform: rotateZ(360deg); } }
 /** 反转棋盘动画 黑方
 ------------------------------------------------------------*/
 @keyframes reverseChessboard-black {
   0% {
-    transform: rotateZ(180deg); }
+    transform: rotateZ(0deg); }
   100% {
-    transform: rotateZ(360deg); } }
+    transform: rotateZ(180deg); } }
 
 /*# sourceMappingURL=index.css.map */

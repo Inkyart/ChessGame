@@ -1,13 +1,13 @@
 /**
  * @file 象棋的主程序
  * @author 夜明筱笙
+ * @description 象棋的主程序文件，负责初始化棋盘，绑定棋盘按钮事件，同时包含一个获取全局变量并输出的函数
 */
 
 
 /** 导入 棋子文件 格子文件 初始化文件 */
 import Lattice from "./script/lattice";
 import Init from "./script/Init";
-
 // 导入默认数据
 import data from './data/default.json'
 import Variables from "./script/Env";
@@ -17,8 +17,6 @@ import ChessUtils from "./utils/ChessUtils";
 const { resetEnv } = VariableUtils
 const { revokeMove } = ChessUtils
 const { resetChessBoard, reverseChessboard } = ChessboardUtils
-
-reverseChessboard()
 
 /** 先初始化 棋盘 */
 const init = new Init()

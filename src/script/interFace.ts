@@ -1,6 +1,7 @@
 /**
  * @file 象棋的接口文件
  * @author 夜明筱笙
+ * @description 包含了全局变量，全局变量修改返回结果，棋子实例信息，棋子初始信息，格子信息，字符串索引，第一个棋子是否存在，点位数据，棋子规则等接口
 */
 
 import Chess from "./chess"
@@ -96,10 +97,6 @@ export interface LatticeInfo {
 export interface StringIndex<T> {
     [index: string]: T
 }
-/** 数字索引 */
-export interface NumberIndex<T> {
-    [index: number]: T
-}
 
 /** 第一个棋子是否存在 */
 export interface existenceChess extends StringIndex<[boolean, boolean]> {
@@ -114,9 +111,3 @@ export interface PointData {
     point: number[][]
     edge?: number[][]
 }
-
-/** 棋子规则 */
-export type chessRule = () => number[]
-
-/** 返回棋子规则 */
-export type returnChessRule = () => chessRule

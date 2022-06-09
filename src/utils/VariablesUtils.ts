@@ -1,6 +1,7 @@
 /**
  * @file 变量工具函数文件
  * @description 包含了重置变量，修改移动计数，操作棋子移动坐标列表，操作被吃棋子坐标列表
+ * @author 夜明筱笙
  */
 
 import Variables from "../script/Env"
@@ -13,6 +14,7 @@ import Chess from "../script/chess"
  * - 修改移动计数
  * - 操作棋子移动坐标列表
  * - 操作移动坐标列表
+ * - 设置移动方
  */
 namespace VariableUtils {
     /** 重置全局变量 返回旧变量值 */
@@ -85,5 +87,11 @@ namespace VariableUtils {
         else return Variables.MoveList.pop()
         return data
     }
+
+    /**
+     * 设置移动方
+     * @param color 
+     */
+    export const setColor = (color: boolean): void => {Variables.Color = color}
 }
 export default VariableUtils

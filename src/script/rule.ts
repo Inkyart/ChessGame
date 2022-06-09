@@ -1,6 +1,7 @@
 /**
  * @file 象棋的规则文件
  * @author 夜明筱笙
+ * @description 棋子的规则类文件，负责判断棋子所需要的规则和返回规则
  */
 // 导入棋子
 import Chess from "./chess";

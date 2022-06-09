@@ -1,5 +1,7 @@
 /**
- * @file 变量文件
+ * @file 全局变量文件
+ * @author 夜明筱笙
+ * @description 存放全局变量
  */
 
 import { Variable } from "./interFace";

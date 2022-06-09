@@ -1,6 +1,7 @@
 /**
  * @file 棋盘格子操作方法文件
  * @description 包含了点击格子方法，激活格子方法，取消激活格子方法
+ * @author 夜明筱笙
  */
 
 import Variables from "../script/Env"

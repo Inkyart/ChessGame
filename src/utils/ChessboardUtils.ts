@@ -1,6 +1,7 @@
 /**
  * @file 棋盘操作方法文件
  * @description 包含了反转棋盘和重置棋盘方法
+ * @author 夜明筱笙
  */
 import Variables from "../script/Env"
 

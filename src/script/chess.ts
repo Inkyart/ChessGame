@@ -1,16 +1,17 @@
-
 /**
  * @file 象棋的棋子类文件
  * @author 夜明筱笙
+ * @description 象棋的棋子类所在文件，负责生成棋子实例
 */
 
-/** 导入接口 */
 import { ChessInfo } from "./interFace"
 import Rule from "./rule"
 import ChessUtils from "../utils/ChessUtils"
 const { toggleOnclickChess } = ChessUtils
 
-/** 象棋的棋子类 */
+/** 
+ * 象棋的棋子类 
+ */
 export default class Chess {
 
     /** 
@@ -60,13 +61,12 @@ export default class Chess {
         this._text = text
     }
 
+    /** 获取当前棋子可到达坐标列表 */
     public getGoalList(): [number, number][] {
         return this._goalList
     }
 
-    /** 
-     * 用于创建 棋子 
-     */
+    /** 用于创建 棋子 */
     public create(): HTMLElement {
 
         /** 设置类名, 并添加颜色 */
@@ -98,6 +98,7 @@ export default class Chess {
         }
     }
 
+    /** 获取棋子 */
     public getChess(): HTMLElement {
         return this._chess
     }
@@ -128,8 +129,8 @@ export default class Chess {
      * @param x x轴
      * @param y y轴
      * @param fn 设置方法
-     * - true 添加
-     * - false 删除
+     * - true 添加到坐标轴列表
+     * - false 从坐标轴列表删除
      */
     public setCoordinate(x: number, y: number, fn: boolean): void {
         this._coordinate = [x, y]

@@ -17,7 +17,7 @@ module.exports = {
     },
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, './src/dist')
+        path: path.resolve(__dirname, './dist')
     },
     devServer: {  //本地调试服务配置
         port: 8080, //端口   

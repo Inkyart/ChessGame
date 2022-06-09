@@ -1,7 +1,7 @@
 /**
  * @file 象棋的格子文件
  * @author 夜明筱笙
- * @description 象棋的隐藏格子，非显示的 canvas 格子
+ * @description 象棋的格子类文件，负责创建棋盘上的格子，并生成棋子
 */
 
 /** 导入棋子模块 */
@@ -72,6 +72,8 @@ export default class Lattice {
              */
             if (this._order === this._infoList[this._index].goal) this.addChess()
             else this.addLattice()
+            // 设置当前移动方
+            if (this._infoList[this._index].goal === 99) VariableUtils.setColor(this._infoList[this._index].color)
         }
     }
 
@@ -83,10 +85,15 @@ export default class Lattice {
             this._infoList[this._index].text,
             this._infoList[this._index].color
         )
+        /** 创建规则 */
         const rule = new Rule(chess)
+        // 为棋子添加规则
         chess.addEvent(rule)
+        // 为当前格子添加棋子
         this.addLattice(chess.create())
+        // 添加棋子到棋子列表中
         operateChessList(true, chess)
+        // 索引自加
         this._index++
     }
 

@@ -1,6 +1,7 @@
 /**
  * @file 棋子操作方法文件
  * @description 包含切换当前点击棋子,移动棋子,撤销移动棋子,棋子被吃,取消棋子被吃
+ * @author 夜明筱笙
  */
 
 import Variables from "../script/Env"
@@ -77,7 +78,7 @@ namespace ChessUtils {
         // 变更最近点击棋子
         Variables.LastOnclickChess = chess
         // 变更颜色方
-        Variables.Color = !Variables.Color
+        VariableUtils.setColor(!Variables.Color)
         // 重置点击棋子
         Variables.RedOnclickChess = null
         Variables.BlackOnclickChess = null
@@ -148,9 +149,7 @@ namespace ChessUtils {
             VariableUtils.operateMoveList(true, [x, y])
             // 计数加一
             VariableUtils.setMoveCount(true)
-            Variables.Color = !Variables.Color
-
-
+            VariableUtils.setColor(!Variables.Color)
             // 将最后被吃棋子从被吃列表中移出
             const info = Variables.EatChessList.pop()
             const [chess, ] = info

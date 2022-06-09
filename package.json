@@ -9,6 +9,10 @@
     "scripts": {
         "web": "npx webpack --watch",
         "dev": "webpack serve --mode development",
-        "scss": "scss --watch ./src/theme/main.scss:./src/theme/index.css"
+        "scss": "scss --watch ./src/theme/main.scss:./src/theme/index.css",
+        "start": "npx webpack"
+    },
+    "dependencies": {
+        "express": "^4.18.1"
     }
 }
