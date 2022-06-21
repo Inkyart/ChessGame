@@ -10,6 +10,8 @@ import { Variable } from "./interFace";
 const Variables: Variable = {
     RedOnclickChess: null,
     BlackOnclickChess: null,
+    RedGeneral: null,
+    BlackGeneral: null,
     LastOnclickChess: null,
     ChessColor: null,
     ChessList: [],

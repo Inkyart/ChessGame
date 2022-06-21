@@ -52,7 +52,6 @@ export default class Init {
 					(i === 0 && j === 3) || 
 					(i === 6 && j === 3)
 				) this.ninePace()
-
 				// 绘制 格子
 				this._ctx.strokeRect(this._x, this._y, this._size, this._size);
 				this._x += this._size;
@@ -83,5 +82,4 @@ export default class Init {
 		// 关闭路径
 		this._ctx.closePath();
 	}
-
 }

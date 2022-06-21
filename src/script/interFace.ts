@@ -12,6 +12,10 @@ export interface Variable extends StringIndex<any> {
     RedOnclickChess: Chess | null
     /** 黑方单击棋子 */
     BlackOnclickChess: Chess | null
+    /** 红方帅 */
+    RedGeneral: Chess | null
+    /** 黑方将 */
+    BlackGeneral: Chess | null
     /** 上个单击棋子 */
     LastOnclickChess: Chess | null
     /** 当前单击棋子颜色 */

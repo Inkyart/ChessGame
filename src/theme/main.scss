@@ -37,21 +37,25 @@ body {
     position: relative;
     @include center();
     transition: 2s;
+
     /** 反转 红方
     ------------------------------------------------------------*/
     &.reverse-red {
         animation: reverseChessboard-red ease-in-out 2s 1;
         animation-fill-mode: forwards;
+
         .chess {
             animation: reverseChessboard-red ease-in-out 2s 1;
             animation-fill-mode: forwards;
         }
     }
+
     /** 反转 黑方
     ------------------------------------------------------------*/
     &.reverse-black {
         animation: reverseChessboard-black ease-in-out 2s 1;
         animation-fill-mode: forwards;
+
         .chess {
             animation: reverseChessboard-black ease-in-out 2s 1;
             animation-fill-mode: forwards;
@@ -80,8 +84,8 @@ canvas {
     z-index: 99;
     border-radius: 15px;
     box-shadow: 4px 4px .3em .1em rgba(0, 0, 0, 0.377),
-                inset -4px -4px .5em .1em rgb(205, 120, 70),
-                inset 1px 1px .2em .1em white;
+        inset -4px -4px .5em .1em rgb(205, 120, 70),
+        inset 1px 1px .2em .1em white;
     background-color: rgba(0, 0, 0, 0.247);
 }
 
@@ -127,6 +131,7 @@ canvas {
         1px 1px .1em 1px black;
     cursor: pointer;
     @include center();
+
     /** 红色文本
     ------------------------------------------------------------*/
     &.red {
@@ -138,6 +143,23 @@ canvas {
     &.black {
         color: black;
     }
+
+    /** 将帅棋子
+    ------------------------------------------------------------*/
+    // &.general {
+    //     position: relative;
+    //     &::before {
+    //         position: absolute;
+    //         content: '';
+    //         width: 70px;
+    //         height: 70px;
+    //         border-radius: 50%;
+    //         background-color: transparent;
+    //         display: block;
+    //         box-shadow: 0 0 .5em 12px black,
+    //                     inset 0 0 .5em 2px black;
+    //     }
+    // }
 }
 
 /** 棋子文本
@@ -147,6 +169,7 @@ canvas {
     height: 30px;
     width: 30px;
 }
+
 
 /** 激活棋子
 ------------------------------------------------------------*/
@@ -159,7 +182,8 @@ canvas {
 ------------------------------------------------------------*/
 .lattice-active {
     position: relative;
-    &::after{
+
+    &::after {
         position: absolute;
         content: '';
         width: 60%;
@@ -199,8 +223,9 @@ canvas {
     background-color: rgb(248, 214, 169);
     font-weight: 800;
     box-shadow: 1px 1px .1em 1px black,
-                inset 1px 1px .1em 1px white;
+        inset 1px 1px .1em 1px white;
     cursor: pointer;
+
     &:hover {
         background-color: lighten($color: rgb(248, 214, 169), $amount: 5);
     }
@@ -212,7 +237,8 @@ canvas {
     0% {
         transform: rotateZ(180deg);
     }
-    100%{
+
+    100% {
         transform: rotateZ(360deg);
     }
 }
@@ -223,7 +249,8 @@ canvas {
     0% {
         transform: rotateZ(0deg);
     }
-    100%{
+
+    100% {
         transform: rotateZ(180deg);
     }
 }

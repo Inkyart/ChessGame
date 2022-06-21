@@ -23,6 +23,8 @@ namespace VariableUtils {
         const oldValue = {
             RedOnclickChess: Variables.RedOnclickChess,
             BlackOnclickChess: Variables.BlackOnclickChess,
+            RedGeneral: Variables.RedGeneral,
+            BlackGeneral: Variables.BlackGeneral,
             ChessColor: Variables.ChessColor,
             ChessList: Variables.ChessList,
             MoveCount: Variables.MoveCount,

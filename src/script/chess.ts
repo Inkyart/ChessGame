@@ -70,7 +70,7 @@ export default class Chess {
     public create(): HTMLElement {
 
         /** 设置类名, 并添加颜色 */
-        this._chess.setAttribute('class', `chess${this._color ? ' red' : ' black'}`)
+        this._chess.setAttribute('class', `chess${this._color ? ' red' : ' black'} ${['将', '帅'].includes(this._text) ? 'general' : ''}`)
 
         /** 棋子文本 */
         const chess_text = document.createElement('span')
@@ -151,11 +151,23 @@ export default class Chess {
         return num
     }
 
-    /**
-     * 切换当前棋子的是否被吃状态 返回当前棋子是否被吃
-     */
+    /** 切换当前棋子的是否被吃状态 返回当前棋子是否被吃 */
     public toggleEatStatus(): boolean {
         this._eat = !this._eat
         return this._eat
+    }
+
+    /**
+     * 被将
+     * @param coordinate 需要判断的坐标组
+     */
+    public General(coordinate: [number, number]): void {
+        // 如果不是将帅 且 坐标不同则取消被将
+        if (!['将', '帅'].includes(this._text) && `${coordinate}` !== `${this._coordinate}`) {
+            this._chess.classList.toggle('general', false)
+        }
+        // 否则被将
+        else this._chess.classList.toggle('general', true)
+
     }
 }

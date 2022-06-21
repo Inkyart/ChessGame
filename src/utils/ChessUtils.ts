@@ -85,7 +85,18 @@ namespace ChessUtils {
         // 清空激活格子
         LatticeUtils.activeLattice([])
         ChessboardUtils.reverseChessboard()
+    }
 
+    /** 将帅规则 */
+    export const generalRule = (): void => {
+        /** 首先获取将帅 */
+        const general = Variables.Color ? Variables.RedGeneral : Variables.BlackGeneral
+        
+    }
+
+    /** 胜利规则 */
+    export const win = (): void => {
+        
     }
 
     /** 撤销棋子 */
